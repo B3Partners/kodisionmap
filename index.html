@@ -9,9 +9,11 @@
       }
     </style>
     <title>OpenLayers 3 example</title>
+
     <script src="ol3/ol-debug.js" type="text/javascript"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js" type="text/javascript"></script>
 	<script src="http://epsg.io/28992.js" type="text/javascript"></script>
+  <script src="b3pmap.js" type="text/javascript"></script>
   </head>
   <body>
     <h1>My Map</h1>
@@ -49,11 +51,11 @@ projection.setExtent([1351.93, 308954.26,275418.70, 635326.65]);
           maxResolution: 3440
         }),
         controls: ol.control.defaults({
-		    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
-		      collapsible: true
-		    })
+	
 		})
       });
+      var bm = new B3pmap();
+     // bm.init();
     </script>
   </body>
 </html>
