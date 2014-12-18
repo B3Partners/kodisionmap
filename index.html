@@ -1,5 +1,59 @@
-<html>
-<head></head>
-<body>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="ol3/ol.css" type="text/css">
+    <style>
+      #map {
+        height: 512px;
+        width: 512px;
+      }
+    </style>
+    <title>OpenLayers 3 example</title>
+    <script src="ol3/ol-debug.js" type="text/javascript"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js" type="text/javascript"></script>
+	<script src="http://epsg.io/28992.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <h1>My Map</h1>
+    <div id="map"></div>
+    <script type="text/javascript">
+
+
+
+var extent = [-285401.0,22598.0,595401.0,903401.0];
+var resolutions = [3440.64,1720.32,860.16,430.08,215.04,107.52,53.76,26.88,13.44,6.72,3.36,1.68,0.84,0.42,0.21,0.105];
+//Above resolutions allow for desired displayed and printed map scales.  
+//  For example, assuming screen resolution of of 96 dpi, zoom level 6 has a scale of 1:50,000, zoom 7 = 1:25,000 and so on.
+ 
+var maxZoom = resolutions.length - 1;
+
+var projection = ol.proj.get('EPSG:28992');
+projection.setExtent([1351.93, 308954.26,275418.70, 635326.65]);
+      var map = new ol.Map({
+        target: 'map',
+        layers: [
+			 new ol.layer.Tile({
+			      source: new ol.source.XYZ({
+			        
+			        url: 'http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm@rd/{z}/{x}/{-y}.png'
+			        //url: 'http://geo.nls.uk/maps/towns/glasgow1857/{z}/{x}/{-y}.png'
+			      })
+			    })
+        ],
+        view: new ol.View({
+          projection: 'EPSG:28992',
+          center: [101984, 437240],
+          zoom: 2,
+          maxZoom: 18,
+          minResolution:0.105,
+          maxResolution: 3440
+        }),
+        controls: ol.control.defaults({
+		    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+		      collapsible: true
+		    })
+		})
+      });
+    </script>
+  </body>
 </html>
