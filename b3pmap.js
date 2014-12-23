@@ -39,9 +39,49 @@ function B3pmap(){
 		}
 	 */
 	this.init = function(config){
-		alert("sfd");
-	
+		
+
+		var extentAr = [-285401.0,22598.0,595401.0,903401.0];
+      	var resolutions = [3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84, 0.42,0.21,0.105];
+		var matrixIds = new Array(14);
+		for (var z = 0; z < resolutions.length; ++z) {
+			matrixIds[z] = 'EPSG:28992:' + z;
+		}
+		var projection = ol.proj.get('EPSG:28992');
+		projection.setExtent(extentAr);
+
+		var layer = new ol.layer.Tile({
+			
+			extent: extentAr,
+			source: new ol.source.WMTS({
+				url: 'http://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaart',
+				layer: 'brtachtergrondkaart',
+				matrixSet: 'EPSG:28992',
+				format: 'image/png',
+				projection: projection,
+				tileGrid: new ol.tilegrid.WMTS({
+					origin: ol.extent.getTopLeft(extentAr),
+					resolutions: resolutions,
+					matrixIds: matrixIds
+				})
+			})
+	    });
+
+		var map = new ol.Map({
+			target: 'map',
+			layers: [
+				layer
+			],
+			view: new ol.View({
+				projection: projection,
+				center: [101984, 437240],
+				zoom: 2,
+				extent: extentAr
+			}),
+			controls: [
+				new ol.control.Zoom(),
+				new ol.control.ScaleLine()
+			]
+		});
 	}
-
-
 }
