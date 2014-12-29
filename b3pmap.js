@@ -1,5 +1,5 @@
 function B3pmap(){
-
+	map = null,
 	/**
 	 * Initialise the map according to the given configuration. 
 	 * Based on:
@@ -39,8 +39,6 @@ function B3pmap(){
 		}
 	 */
 	this.init = function(config){
-		
-
 		var extentAr = [-285401.0,22598.0,595401.0,903401.0];
       	var resolutions = [3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84, 0.42,0.21,0.105];
 		var matrixIds = new Array(14);
@@ -50,9 +48,7 @@ function B3pmap(){
 		var projection = ol.proj.get('EPSG:28992');
 		projection.setExtent(extentAr);
 
-		var layers = initLayers(config.input.wms_layers);
-
-		var background = new ol.layer.Tile({
+		var layers = [ new ol.layer.Tile({
 			extent: extentAr,
 			source: new ol.source.WMTS({
 				url: 'http://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaart',
@@ -66,38 +62,57 @@ function B3pmap(){
 					matrixIds: matrixIds
 				})
 			})
-	    });
-	    layers.unshift(background);
+	    })];
+	    initLayers(config.input.wms_layers,layers);
 
-		var map = new ol.Map({
-			target: 'map',
-			layers: layers,
-			view: new ol.View({
-				projection: projection,
-				center: [101984, 437240],
-				zoom: 2,
-				minResolution: 0.105,
-				maxResolution: 3440.64,
-				extent: extentAr
-			}),
-			controls: [
-				new ol.control.Zoom(),
-				new ol.control.ScaleLine()
-			]
-		});
+	    createMap(layers,config.input.initial_zoom || 2, extentAr,projection)
+		initModus(config);
 	},
 
-	initLayers = function (layers){
-		var layerArray = [];
-		for (var i = 0; i < layers.length; i++) {
-			var layerConfig = layers[i];
+	initModus  = function (config){
+		if(config.input.modus === "select"){
+
+		}else if(config.input.modus === "draw"){
+			var source = new ol.source.Vector();
+
+			var vector = new ol.layer.Vector({
+				source: source,
+				style: new ol.style.Style({
+					fill: new ol.style.Fill({
+						color: 'rgba(255, 255, 255, 0.2)'
+					}),
+					stroke: new ol.style.Stroke({
+						color: '#ffcc33',
+						width: 2
+					}),
+					image: new ol.style.Circle({
+						radius: 7,
+						fill: new ol.style.Fill({
+							color: '#ffcc33'
+						})
+					})
+				})
+			});
+			map.addLayer(vector);
+			var draw = new ol.interaction.Draw({
+		      source: source,
+		      type: /** @type {ol.geom.GeometryType} */ config.input.draw_modus
+		    });
+		    map.addInteraction(draw);
+		}else{
+			throw "Wrong modus given. Only select and draw supported";
+		}
+
+	},
+
+	initLayers = function (layersConfig, layers){
+		for (var i = 0; i < layersConfig.length; i++) {
+			var layerConfig = layersConfig[i];
 			var layer = initLayer(layerConfig);
 			if(layer){
-				layerArray.push(layer);
+				layers.push(layer);
 			}
 		};
-
-		return layerArray;
 	},
 
 	initLayer = function (layerConfig){
@@ -119,5 +134,24 @@ function B3pmap(){
 	},
 	initTool = function (tool){
 
+	},
+
+	createMap = function(layers, zoom, extent, projection){
+		map = new ol.Map({
+			target: 'map',
+			layers: layers,
+			view: new ol.View({
+				projection: projection,
+				center: [101984, 437240],
+				zoom: zoom,
+				minResolution: 0.105,
+				maxResolution: 3440.64,
+				extent: extent
+			}),
+			controls: [
+				new ol.control.Zoom(),
+				new ol.control.ScaleLine()
+			]
+		});
 	}
 }
