@@ -4,11 +4,11 @@
     <link rel="stylesheet" href="ol3/ol.css" type="text/css">
     <style>
       #map {
-        height: 512px;
-        width: 512px;
+        height: 100%;
+        width: 100%;
       }
     </style>
-    <title>OpenLayers 3 example</title>
+    <title>Kodision Map Test</title>
 
     <script src="ol3/ol-debug.js" type="text/javascript"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js" type="text/javascript"></script>
@@ -16,13 +16,45 @@
   <script src="b3pmap.js" type="text/javascript"></script>
   </head>
   <body>
-    <h1>My Map</h1>
+    <h1>Kodision Map</h1>
     <div id="map"></div>
     <script type="text/javascript">
-
+      var config = { 
+          "input": { 
+              "wms_layers": [ 
+                  { "name":'NWB wegen', "url" : "http://geodata.nationaalgeoregister.nl/nwbwegen/wms", layers: "wegvakken"},
+                  { "name":'Nationale parken', "url" : "http://geodata.nationaalgeoregister.nl/nationaleparken/wms", "layers" : "nationaleparken"}
+              ], 
+              "wfs_layers": [ 
+                  { "name" : "NWB wegen wfs", 'url' : "http://geodata.nationaalgeoregister.nl/nwbwegen/wfs"}
+              ], 
+              "modus": "select/draw (selecteren van object in kaart of tekenen van geometrie", 
+              "draw_modus": "point/polygon", 
+                    "select_wfs_layer": "naam van wfs layer", 
+              "initial_zoom": "zoomfactor van de kaart bij opstart", 
+              "geolocator_url": "url naar service waar coordinaten kunnen worden opgevraagd", 
+              "format_geolocator_result": "coordx,coordy", 
+              "tools": [ 
+                  {"tool_id": "id van tool die aan moet staan in de kaart 1"}, 
+                  {"tool_id": "id van tool die aan moet staan in de kaart 2"}, 
+                  {"tool_id": "id van tool die aan moet staan in de kaart 3"} 
+              ] 
+          }, 
+          "output": { 
+              "image": "base 64 string van plaatje", 
+              "surface": "berekend oppervlak (0 indien punt)", 
+              "wkt": "wkt representatie van getekend object", 
+              "gml": "gml representatie van getekend object", 
+              "object-ids": [ 
+                  {"object-id": "id 1"}, 
+                  {"object-id": "id 2"}, 
+                  {"object-id": "id 3"} 
+              ] 
+              } 
+      };
 
       var bm = new B3pmap();
-      bm.init();
+      bm.init(config);
     </script>
   </body>
 </html>

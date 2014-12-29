@@ -50,8 +50,9 @@ function B3pmap(){
 		var projection = ol.proj.get('EPSG:28992');
 		projection.setExtent(extentAr);
 
-		var layer = new ol.layer.Tile({
-			
+		var layers = initLayers(config.input.wms_layers);
+
+		var background = new ol.layer.Tile({
 			extent: extentAr,
 			source: new ol.source.WMTS({
 				url: 'http://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaart',
@@ -66,16 +67,17 @@ function B3pmap(){
 				})
 			})
 	    });
+	    layers.unshift(background);
 
 		var map = new ol.Map({
 			target: 'map',
-			layers: [
-				layer
-			],
+			layers: layers,
 			view: new ol.View({
 				projection: projection,
 				center: [101984, 437240],
 				zoom: 2,
+				minResolution: 0.105,
+				maxResolution: 3440.64,
 				extent: extentAr
 			}),
 			controls: [
@@ -83,5 +85,39 @@ function B3pmap(){
 				new ol.control.ScaleLine()
 			]
 		});
+	},
+
+	initLayers = function (layers){
+		var layerArray = [];
+		for (var i = 0; i < layers.length; i++) {
+			var layerConfig = layers[i];
+			var layer = initLayer(layerConfig);
+			if(layer){
+				layerArray.push(layer);
+			}
+		};
+
+		return layerArray;
+	},
+
+	initLayer = function (layerConfig){
+		var layer = new ol.layer.Image({
+			source: new ol.source.ImageWMS({
+				url: layerConfig.url,
+				params: {
+					layers: layerConfig.layers
+				}
+			})
+		});
+
+		return layer;
+
+	},
+
+	initTools = function(tools){
+
+	},
+	initTool = function (tool){
+
 	}
 }
