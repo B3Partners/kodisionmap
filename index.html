@@ -7,6 +7,35 @@
         height: 100%;
         width: 100%;
       }
+    /**
+     * The zoomslider in the second map shall be placed between the zoom-in and
+     * zoom-out buttons.
+     */
+    #map .ol-zoom .ol-zoom-out {
+      margin-top: 204px;
+    }
+    #map .ol-zoomslider {
+      background-color: transparent;
+      top: 2.3em;
+    }
+
+    #map .ol-touch .ol-zoom .ol-zoom-out { 
+      margin-top: 212px;
+    }
+    #map .ol-touch .ol-zoomslider {
+      top: 2.75em;
+    }
+
+    #map .ol-zoom-in.ol-has-tooltip:hover [role=tooltip],
+    #map .ol-zoom-in.ol-has-tooltip:focus [role=tooltip] {
+      top: 3px;
+    }
+
+    #map .ol-zoom-out.ol-has-tooltip:hover [role=tooltip],
+    #map .ol-zoom-out.ol-has-tooltip:focus [role=tooltip] {
+      top: 232px;
+    }
+
     </style>
     <title>Kodision Map Test</title>
 
@@ -28,16 +57,18 @@
               "wfs_layers": [ 
                   { "name" : "NWB wegen wfs", 'url' : "http://geodata.nationaalgeoregister.nl/nwbwegen/wfs"}
               ], 
-              "modus": "select",// "select/draw (selecteren van object in kaart of tekenen van geometrie", 
+              "modus": "draw",// "select/draw (selecteren van object in kaart of tekenen van geometrie", 
               "draw_modus":  "Polygon", 
                     "select_wfs_layer": "naam van wfs layer", 
               "initial_zoom": 6, // "zoomfactor van de kaart bij opstart", 
               "geolocator_url": "url naar service waar coordinaten kunnen worden opgevraagd", 
               "format_geolocator_result": "coordx,coordy", 
               "tools": [ 
-                  {"tool_id": "id van tool die aan moet staan in de kaart 1"}, 
-                  {"tool_id": "id van tool die aan moet staan in de kaart 2"}, 
-                  {"tool_id": "id van tool die aan moet staan in de kaart 3"} 
+                  {"tool_id": "ZoomSlider"}, 
+                  {"tool_id": "MousePosition"}, 
+                  {"tool_id": "ScaleLine"}, 
+             //     {"tool_id": "Zoom"}, 
+                  {"tool_id": "ZoomSlider"}
               ] 
           }, 
           "output": { 

@@ -63,13 +63,13 @@ function B3pmap(){
 				})
 			})
 	    })];
-	    initLayers(config.input.wms_layers,layers);
-
-	    createMap(layers,config.input.initial_zoom || 2, extentAr,projection)
-		initModus(config);
+	    this.initLayers(config.input.wms_layers,layers);
+	    this.createMap(layers,config.input.initial_zoom || 2, extentAr,projection)
+		this.initModus(config);
+		this.initTools(config.input.tools);
 	},
 
-	initModus  = function (config){
+	this.initModus  = function (config){
 		if(config.input.modus === "select"){
 
 		}else if(config.input.modus === "draw"){
@@ -93,11 +93,11 @@ function B3pmap(){
 					})
 				})
 			});
-			map.addLayer(vector);
 			var draw = new ol.interaction.Draw({
 		      source: source,
-		      type: /** @type {ol.geom.GeometryType} */ config.input.draw_modus
+		      type: config.input.draw_modus
 		    });
+			map.addLayer(vector);
 		    map.addInteraction(draw);
 		}else{
 			throw "Wrong modus given. Only select and draw supported";
@@ -105,17 +105,17 @@ function B3pmap(){
 
 	},
 
-	initLayers = function (layersConfig, layers){
+	this.initLayers = function (layersConfig, layers){
 		for (var i = 0; i < layersConfig.length; i++) {
 			var layerConfig = layersConfig[i];
-			var layer = initLayer(layerConfig);
+			var layer = this.initLayer(layerConfig);
 			if(layer){
 				layers.push(layer);
 			}
 		};
 	},
 
-	initLayer = function (layerConfig){
+	this.initLayer = function (layerConfig){
 		var layer = new ol.layer.Image({
 			source: new ol.source.ImageWMS({
 				url: layerConfig.url,
@@ -128,15 +128,44 @@ function B3pmap(){
 		return layer;
 
 	},
-
-	initTools = function(tools){
-
+	/**
+	* Init Tools
+	* @param tools Configuration array, where each element is a configuration of a tool.
+	* Initializes and adds the tool to the map. General layout of one configuration element:
+	* {
+		tool_id: <id_the_tool>
+      }
+	* Possible tool_id's:
+	* MousePosition
+	* ScaleLine
+	* Zoom
+	* ZoomSlider
+	*/
+	this.initTools = function(tools){
+		for (var i = 0; i < tools.length; i++) {
+			var toolConfig = tools[i];
+			var tool = this.initTool(toolConfig);
+			map.addControl(tool);
+		};
 	},
-	initTool = function (tool){
+	/**
+	* initTool (toolConfig)
+	* @param toolConfig Object with the id (ie. classname) of the tool.
+	* Initialises the actual tool and returns it.
+	*/
+	this.initTool = function (toolConfig){
+		var id = toolConfig["tool_id"];
 
+		var config = {};
+		if(id === "MousePosition"){
+			config.coordinateFormat = ol.coordinate.createStringXY(2);
+		}
+
+		var tool = new ol.control[id](config);
+		return tool;
 	},
 
-	createMap = function(layers, zoom, extent, projection){
+	this.createMap = function(layers, zoom, extent, projection){
 		map = new ol.Map({
 			target: 'map',
 			layers: layers,
@@ -148,10 +177,7 @@ function B3pmap(){
 				maxResolution: 3440.64,
 				extent: extent
 			}),
-			controls: [
-				new ol.control.Zoom(),
-				new ol.control.ScaleLine()
-			]
+			controls: []
 		});
 	}
 }
