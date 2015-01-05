@@ -80,7 +80,8 @@ function B3pmap(){
 		var features = [];
 		var output = {
 			"surface": this.getSurface(),
-			"wkt": this.getWKTs()/*, 
+			"wkt": this.getWKTs(),
+			"gml" : this.getGMLs()/*, 
 			"image": "base 64 string van plaatje", 
 		        "wkt": "wkt representatie van getekend object", 
 		        "gml": "gml representatie van getekend object", 
@@ -124,6 +125,22 @@ function B3pmap(){
 			wkts.push(wkt);
 		};
 		return wkts;
+	},
+	/*
+	* getGMLs
+	* @returns Returns an string containing the GML representation of the drawn features.
+	*/
+	this.getGMLs = function(){
+		var gmlParser = new ol.format.GML({
+			featureNS: "http://www.b3partners.nl/b3p",
+			featureType: "b3p"
+		});
+		
+		var source = this.vectorLayer.getSource();
+		var features = source.getFeatures();
+		var gmls = gmlParser.writeFeatures(features);
+
+		return gmls;
 	},
 	this.initModus  = function (config){
 		if(config.input.modus === "select"){
