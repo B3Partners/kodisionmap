@@ -79,7 +79,17 @@ function B3pmap(){
 
 		var features = [];
 		var output = {
-			"surface": "berekend oppervlak (0 indien punt)", 
+			"surface": this.getSurface(),
+			"wkt": this.getWKTs()/*, 
+			"image": "base 64 string van plaatje", 
+		        "wkt": "wkt representatie van getekend object", 
+		        "gml": "gml representatie van getekend object", 
+		        "object-ids": [ 
+		            {"object-id": "id 1"}, 
+		            {"object-id": "id 2"}, 
+		            {"object-id": "id 3"} 
+		        ] 
+		        } */
 		};
 
 		return output;
@@ -100,7 +110,21 @@ function B3pmap(){
 		}
 		return area;
 	},
-
+	/*
+	* getWKTs
+	* @returns Returns an array containing the wkt representation of the drawn features.
+	*/
+	this.getWKTs = function(){
+		var source = this.vectorLayer.getSource();
+		var features = source.getFeatures();
+		var wkts = [];
+		for (var i = 0; i < features.length; i++) {
+			var feature = features[i];
+			var wkt = feature.getGeometry();
+			wkts.push(wkt);
+		};
+		return wkts;
+	},
 	this.initModus  = function (config){
 		if(config.input.modus === "select"){
 
