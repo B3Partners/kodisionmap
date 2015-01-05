@@ -4,8 +4,8 @@
     <link rel="stylesheet" href="ol3/ol.css" type="text/css">
     <style>
       #map {
-        height: 100%;
-        width: 100%;
+        height: 80%;
+        width: 80%;
       }
     /**
      * The zoomslider in the second map shall be placed between the zoom-in and
@@ -87,5 +87,8 @@
       var bm = new B3pmap();
       bm.init(config);
     </script>
+
+          <a id="export-png" class="btn" download="map.png"><i class="icon-download"></i> Export PNG</a>
+          <canvas id="exportDest"/>
   </body>
 </html>

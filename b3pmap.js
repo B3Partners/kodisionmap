@@ -1,5 +1,7 @@
 function B3pmap(){
-	map = null,
+	this.map = null,
+	this.vectorLayer = null,
+	this.draw = null,
 	/**
 	 * Initialise the map according to the given configuration. 
 	 * Based on:
@@ -64,9 +66,39 @@ function B3pmap(){
 			})
 	    })];
 	    this.initLayers(config.input.wms_layers,layers);
+
 	    this.createMap(layers,config.input.initial_zoom || 2, extentAr,projection)
 		this.initModus(config);
 		this.initTools(config.input.tools);
+	},
+
+	/**
+	*
+	*/
+	this.getOuput = function(){
+
+		var features = [];
+		var output = {
+			"surface": "berekend oppervlak (0 indien punt)", 
+		};
+
+		return output;
+	},
+	this.getSurface = function(){
+		var source = this.vectorLayer.getSource();
+		var features = source.getFeatures();
+		var area = 0;
+		if(this.draw.type_ === "Polygon"){
+			for (var i = 0; i < features.length; i++) {
+				var feature = features[i];
+				area += feature.getGeometry().getArea();
+			};
+		}else if(this.draw.type_ === "Polygon"){
+			// when point, don't calculate the area :)
+		}else{
+			throw "Other geometry types not yet implemented";
+		}
+		return area;
 	},
 
 	this.initModus  = function (config){
@@ -75,7 +107,7 @@ function B3pmap(){
 		}else if(config.input.modus === "draw"){
 			var source = new ol.source.Vector();
 
-			var vector = new ol.layer.Vector({
+			this.vectorLayer = new ol.layer.Vector({
 				source: source,
 				style: new ol.style.Style({
 					fill: new ol.style.Fill({
@@ -93,12 +125,14 @@ function B3pmap(){
 					})
 				})
 			});
-			var draw = new ol.interaction.Draw({
+			this.draw = new ol.interaction.Draw({
 		      source: source,
 		      type: config.input.draw_modus
 		    });
-			map.addLayer(vector);
-		    map.addInteraction(draw);
+
+
+			this.map.addLayer(this.vectorLayer);
+		    this.map.addInteraction(this.draw);
 		}else{
 			throw "Wrong modus given. Only select and draw supported";
 		}
@@ -145,7 +179,7 @@ function B3pmap(){
 		for (var i = 0; i < tools.length; i++) {
 			var toolConfig = tools[i];
 			var tool = this.initTool(toolConfig);
-			map.addControl(tool);
+			this.map.addControl(tool);
 		};
 	},
 	/**
@@ -166,7 +200,7 @@ function B3pmap(){
 	},
 
 	this.createMap = function(layers, zoom, extent, projection){
-		map = new ol.Map({
+		this.map = new ol.Map({
 			target: 'map',
 			layers: layers,
 			view: new ol.View({
