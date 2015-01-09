@@ -84,7 +84,6 @@ function B3pmap(){
 			"gml" : this.getGMLs()/*, 
 			"image": "base 64 string van plaatje", 
 		        "wkt": "wkt representatie van getekend object", 
-		        "gml": "gml representatie van getekend object", 
 		        "object-ids": [ 
 		            {"object-id": "id 1"}, 
 		            {"object-id": "id 2"}, 
