@@ -50,6 +50,7 @@ Hoe te gebruiken
     <script src="http://epsg.io/28992.js" type="text/javascript"></script>
     <script src="b3pmap.js" type="text/javascript"></script>
 ```
+Neem ook een div element met het id "map" op. Hier wordt de kaart in getoond.
 3. Voer het de volgende javascript calls uit:
 ```javascript
 	var config = { 
