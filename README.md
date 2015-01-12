@@ -95,4 +95,4 @@ Hoe te gebruiken
       	};
       */
     ```
-4. An example can be fond
+4. An example can be found in index.html
