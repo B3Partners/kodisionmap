@@ -8,7 +8,7 @@ Hoe te gebruiken
 ----------
 1. Download en extract de zipfile.
 2. Neem de volgende scripts/csscode/css files op in de html pagina (nb. Css code zal later niet meer nodig zijn)
-```html
+    ```html
     <link rel="stylesheet" href="ol3/ol.css" type="text/css">
     <style>
       #map {
@@ -49,10 +49,12 @@ Hoe te gebruiken
     <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js" type="text/javascript"></script>
     <script src="http://epsg.io/28992.js" type="text/javascript"></script>
     <script src="b3pmap.js" type="text/javascript"></script>
-```
+
+    ```
 Neem ook een div element met het id "map" op. Hier wordt de kaart in getoond.
+
 3. Voer het de volgende javascript calls uit:
-```javascript
+    ```javascript
 	var config = { 
           "input": { 
               "wms_layers": [ 
@@ -95,5 +97,5 @@ Neem ook een div element met het id "map" op. Hier wordt de kaart in getoond.
               } 
       	};
       */
-```
-4. An example can be fond
+    ```
+4. An example can be found in index.html
