@@ -2,6 +2,8 @@ function B3pmap(){
 	this.map = null,
 	this.vectorLayer = null,
 	this.draw = null,
+	this.select = null,
+	this.modus = null,
 	/**
 	 * Initialise the map according to the given configuration. 
 	 * Based on:
@@ -43,12 +45,15 @@ function B3pmap(){
 	this.init = function(config){
 		var extentAr = [-285401.0,22598.0,595401.0,903401.0];
       	var resolutions = [3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84, 0.42,0.21,0.105];
-		var matrixIds = new Array(14);
+		var matrixIds = [];
 		for (var z = 0; z < resolutions.length; ++z) {
 			matrixIds[z] = 'EPSG:28992:' + z;
 		}
 		var projection = ol.proj.get('EPSG:28992');
 		projection.setExtent(extentAr);
+
+    	proj4.defs('http://www.opengis.net/gml/srs/epsg.xml#28992', 
+        proj4.defs('EPSG:28992')); 
 
 		var layers = [ new ol.layer.Tile({
 			extent: extentAr,
@@ -65,7 +70,8 @@ function B3pmap(){
 				})
 			})
 	    })];
-	    this.initLayers(config.input.wms_layers,layers);
+	    this.initWMSLayers(config.input.wms_layers,layers);
+	    this.initWFSLayers(config.input.wfs_layers,layers);
 
 	    this.createMap(layers,config.input.initial_zoom || 2, extentAr,projection)
 		this.initModus(config);
@@ -81,7 +87,7 @@ function B3pmap(){
 		var output = {
 			"surface": this.getSurface(),
 			"wkt": this.getWKTs(),
-			"gml" : this.getGMLs()/*, 
+		/*	"gml" : this.getGMLs(), 
 			"image": "base 64 string van plaatje", 
 		        "wkt": "wkt representatie van getekend object", 
 		        "object-ids": [ 
@@ -95,18 +101,20 @@ function B3pmap(){
 		return output;
 	},
 	this.getSurface = function(){
-		var source = this.vectorLayer.getSource();
-		var features = source.getFeatures();
 		var area = 0;
-		if(this.draw.type_ === "Polygon"){
-			for (var i = 0; i < features.length; i++) {
-				var feature = features[i];
-				area += feature.getGeometry().getArea();
-			};
-		}else if(this.draw.type_ === "Point"){
-			// when point, don't calculate the area :)
-		}else{
-			throw "Other geometry types not yet implemented";
+		if(this.modus === "draw"){
+			var source = this.vectorLayer.getSource();
+			var features = source.getFeatures();
+			if(this.draw.type_ === "Polygon"){
+				for (var i = 0; i < features.length; i++) {
+					var feature = features[i];
+					area += feature.getGeometry().getArea();
+				};
+			}else if(this.draw.type_ === "Point"){
+				// when point, don't calculate the area :)
+			}else{
+				throw "Other geometry types not yet implemented";
+			}
 		}
 		return area;
 	},
@@ -115,12 +123,21 @@ function B3pmap(){
 	* @returns Returns an array containing the wkt representation of the drawn features.
 	*/
 	this.getWKTs = function(){
-		var source = this.vectorLayer.getSource();
-		var features = source.getFeatures();
 		var wkts = [];
+		var features = [];
+		if(this.modus === "draw"){
+			var source = this.vectorLayer.getSource();
+			features = source.getFeatures();
+			
+		}else if (this.modus === "select"){
+			features = this.select.getFeatures().array_;
+		}
+
+		var wktParser = new ol.format.WKT();
 		for (var i = 0; i < features.length; i++) {
 			var feature = features[i];
-			var wkt = feature.getGeometry();
+
+			var wkt = wktParser.writeFeature(feature);
 			wkts.push(wkt);
 		};
 		return wkts;
@@ -142,9 +159,12 @@ function B3pmap(){
 		return gmls;
 	},
 	this.initModus  = function (config){
-		if(config.input.modus === "select"){
-
-		}else if(config.input.modus === "draw"){
+		this.modus = config.input.modus;
+		if(this.modus === "select"){
+			var me = this;
+			this.select = new ol.interaction.Select({toggle:true, toggleCondition:  ol.events.condition.noModifierKeys});
+			this.map.addInteraction(this.select);
+		}else if(this.modus === "draw"){
 			var source = new ol.source.Vector();
 
 			this.vectorLayer = new ol.layer.Vector({
@@ -179,17 +199,75 @@ function B3pmap(){
 
 	},
 
-	this.initLayers = function (layersConfig, layers){
+	/**
+	* initWFSLayers
+	* Initializes the given WFS layers
+	*/
+	this.initWFSLayers = function(layersConfig, layers){
+		for (var i = 0; i < layersConfig.length; i++) {
+			var config = layersConfig[i];
+			var layer = this.initWFSLayer(config);
+			if(layer){
+				layers.push(layer);
+			}
+		};
+	},
+	this.test = null,
+	this.initWFSLayer = function(layerConfig){
+		var me = this;
+		this.test = new ol.source.ServerVector({
+		  format: new ol.format.GeoJSON(),
+		  loader: function(extent, resolution, projection) {
+		    var url = layerConfig.url + '?service=WFS&' +
+		        'version=1.1.0&request=GetFeature&typename=' + layerConfig.layers +
+		        '&outputFormat=application/json&srsName=EPSG:28992&bbox=' + extent.join(',') + '';
+		    $.ajax({
+		      url: url,
+		      //crossDomain:true,
+		      dataType: 'text',
+		      success: function(data, status){
+				var c = 0;
+				me.test.addFeatures(me.test.readFeatures(data));
+		      },
+		      error: function(a,b,c){
+		      	var b =0;
+		      }
+		    });
+
+		  },
+		/*  strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
+		    maxZoom: 19
+		  })),*/
+		  projection: 'EPSG:28992'
+		});
+
+		var loadFeatures = function(response) {
+		  
+		};
+
+		var vector = new ol.layer.Vector({
+		  source: this.test,
+		  style: new ol.style.Style({
+		    stroke: new ol.style.Stroke({
+		      color: 'rgba(0, 0, 255, 1.0)',
+		      width: 2
+		    })
+		  })
+		});
+		return vector;
+	},
+
+	this.initWMSLayers = function (layersConfig, layers){
 		for (var i = 0; i < layersConfig.length; i++) {
 			var layerConfig = layersConfig[i];
-			var layer = this.initLayer(layerConfig);
+			var layer = this.initWMSLayer(layerConfig);
 			if(layer){
 				layers.push(layer);
 			}
 		};
 	},
 
-	this.initLayer = function (layerConfig){
+	this.initWMSLayer = function (layerConfig){
 		var layer = new ol.layer.Image({
 			source: new ol.source.ImageWMS({
 				url: layerConfig.url,
@@ -200,7 +278,6 @@ function B3pmap(){
 		});
 
 		return layer;
-
 	},
 	/**
 	* Init Tools
