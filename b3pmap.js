@@ -1,10 +1,18 @@
 function B3pmap(){
+	this.scripts= [
+
+    "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js",
+    "ol3/ol-debug.js",
+    "http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js",
+    "http://epsg.io/28992.js"
+	];
 	this.map = null,
 	this.vectorLayer = null,
 	this.draw = null,
 	this.select = null,
 	this.modus = null,
 	this.wfsSource = null,
+	this.config = null,
 	/**
 	 * Initialise the map according to the given configuration. 
 	 * Based on:
@@ -44,6 +52,25 @@ function B3pmap(){
 		}
 	 */
 	this.init = function(config){
+		this.config = config;
+		this.initSources();
+	},
+
+	this.initSources = function(){
+		if(this.scripts.length > 0 ){
+			var script = this.scripts[0];
+			this.scripts.splice(0,1);
+			console.log("Load script: " + script);
+			console.log("Remaining scripts: " + this.scripts.join(","));
+			console.log("*******************");
+			this.loadScript(script, this.initSources);
+		}else{
+			console.log("Init the rest");
+			this.initComponent();
+		}
+	},
+
+	this.initComponent = function (){
 		var extentAr = [-285401.0,22598.0,595401.0,903401.0];
       	var resolutions = [3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84, 0.42,0.21,0.105];
 		var matrixIds = [];
@@ -71,14 +98,14 @@ function B3pmap(){
 				})
 			})
 	    })];
-	    this.initWMSLayers(config.input.wms_layers,layers);
-	    this.initWFSLayers(config.input.wfs_layers,layers);
+	    this.initWMSLayers(this.config.input.wms_layers,layers);
+	    this.initWFSLayers(this.config.input.wfs_layers,layers);
 
-	    this.createMap(layers,config.input.initial_zoom || 2, extentAr,projection)
-		this.initModus(config);
-		this.initTools(config.input.tools);
+	    this.createMap(layers,this.config.input.initial_zoom || 2, extentAr,projection)
+		this.initModus(this.config);
+		this.initTools(this.config.input.tools);
+		this.openGeolocatorURL(this.config.input);
 	},
-
 	/**
 	* getOutput
 	* Return the output of the user interaction. 
@@ -236,6 +263,30 @@ function B3pmap(){
 	},
 
 	/**
+	* openGeolocatorURL
+	* Open the given geolocator url, parse the coordinates and zoom to them.
+	*/
+	this.openGeolocatorURL = function(config){
+		if(config.geolocator_url && config.format_geolocator_result){
+			var me = this;
+			$.ajax({
+				url: config.geolocator_url,
+    			crossDomain: true,
+				dataType: 'text',
+				success: function(data, status){
+					var splitted = data.split(",");
+					var coords = [parseFloat(splitted[0]),parseFloat(splitted[1])];
+					var view = me.map.getView();
+					view.setCenter(coords);
+				},
+				error: function(xhr, status, error){
+					throw "Error collecting features: " + status + " Error given:" + error;
+				}
+			});
+		}
+	},
+
+	/**
 	* initWFSLayers
 	* Initializes the given WFS layers
 	*/
@@ -253,26 +304,25 @@ function B3pmap(){
 		this.wfsSource = new ol.source.ServerVector({
 		  format: new ol.format.GeoJSON(),
 		  loader: function(extent, resolution, projection) {
-		  	var url = layerConfig.url + '?service=WFS&' +
-		        'version=1.1.0&request=GetFeature&typename=' + layerConfig.layers +
-		        '&outputFormat=application/json&srsName=EPSG:28992&bbox=' + extent.join(',') + '';
-		    $.ajax({
-		      url: url,
-		      //crossDomain:true,
-		      dataType: 'text',
-		      success: function(data, status){
-				var c = 0;
-				me.wfsSource.addFeatures(me.wfsSource.readFeatures(data));
-		      },
-		      error: function(a,b,c){
-		      	var b =0;
-		      }
-			    });
+				var url = layerConfig.url + '?service=WFS&' +
+			        'version=1.1.0&request=GetFeature&typename=' + layerConfig.layers +
+			        '&outputFormat=application/json&srsName=EPSG:28992&bbox=' + extent.join(',') + '';
+				$.ajax({
+					url: url,
+					crossDomain:true,
+					dataType: 'text',
+					success: function(data, status){
+						me.wfsSource.addFeatures(me.wfsSource.readFeatures(data));
+					},
+					error: function(xhr, status, error){
+						throw "Error collecting features: " + status + " Error given:" + error;
+					}
+				});
 
 		  },
-		/*  strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
+		  strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
 		    maxZoom: 19
-		  })),*/
+		  })),
 		  projection: 'EPSG:28992'
 		});
 
@@ -361,5 +411,25 @@ function B3pmap(){
 			}),
 			controls: []
 		});
+	},
+	this.loadScript = function (url, callback){
+		// Adding the script tag to the head as suggested before
+	    var head = document.getElementsByTagName('head')[0];
+	    var script = document.createElement('script');
+	    script.type = 'text/javascript';
+	    script.src = url;
+
+	    // Then bind the event to the callback function.
+	    // There are several events for cross browser compatibility.
+	    var me = this;
+	    script.onreadystatechange = function(){
+	    	callback.apply(me);
+	    };
+	    script.onload = function(){
+	    	callback.apply(me);
+	    };
+
+	    // Fire the loading
+	    head.appendChild(script);
 	}
 }
