@@ -87,8 +87,8 @@ function B3pmap(){
 		var output = {
 			"surface": this.getSurface(),
 			"wkt": this.getWKTs(),
-		/*	"gml" : this.getGMLs(), 
-			"image": "base 64 string van plaatje", 
+			"gml" : this.getGMLs() 
+			/*	"image": "base 64 string van plaatje", 
 		        "wkt": "wkt representatie van getekend object", 
 		        "object-ids": [ 
 		            {"object-id": "id 1"}, 
@@ -116,7 +116,7 @@ function B3pmap(){
 				throw "Other geometry types not yet implemented";
 			}
 		}else if(this.modus === "select"){
-			var features = this.select.getFeatures().array_;
+			var features = this.select.getFeatures().getArray();
 			for (var i = 0; i < features.length; i++) {
 				var feature = features[i];
 				area += feature.getGeometry().getArea();
@@ -127,7 +127,7 @@ function B3pmap(){
 	},
 	/*
 	* getWKTs
-	* @returns Returns an array containing the wkt representation of the drawn features.
+	* @returns Returns an array containing the wkt representation of the drawn or selected features.
 	*/
 	this.getWKTs = function(){
 		var wkts = [];
@@ -137,7 +137,7 @@ function B3pmap(){
 			features = source.getFeatures();
 			
 		}else if (this.modus === "select"){
-			features = this.select.getFeatures().array_;
+			features = this.select.getFeatures().getArray();
 		}
 
 		var wktParser = new ol.format.WKT();
@@ -151,16 +151,21 @@ function B3pmap(){
 	},
 	/*
 	* getGMLs
-	* @returns Returns an string containing the GML representation of the drawn features.
+	* @returns Returns an string containing the GML representation of the drawn or selected features.
 	*/
 	this.getGMLs = function(){
 		var gmlParser = new ol.format.GML({
 			featureNS: "http://www.b3partners.nl/b3p",
 			featureType: "b3p"
 		});
-		
-		var source = this.vectorLayer.getSource();
-		var features = source.getFeatures();
+		var features = [];
+
+		if(this.modus === "draw"){
+			var source = this.vectorLayer.getSource();
+			features = source.getFeatures();
+		}else if(this.modus === "select"){
+			features = this.select.getFeatures().getArray();
+		}
 		var gmls = gmlParser.writeFeatures(features);
 
 		return gmls;
