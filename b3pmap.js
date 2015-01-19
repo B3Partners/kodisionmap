@@ -115,6 +115,13 @@ function B3pmap(){
 			}else{
 				throw "Other geometry types not yet implemented";
 			}
+		}else if(this.modus === "select"){
+			var features = this.select.getFeatures().array_;
+			for (var i = 0; i < features.length; i++) {
+				var feature = features[i];
+				area += feature.getGeometry().getArea();
+			};
+
 		}
 		return area;
 	},
