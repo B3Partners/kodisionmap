@@ -4,6 +4,7 @@ function B3pmap(){
 	this.draw = null,
 	this.select = null,
 	this.modus = null,
+	this.wfsSource = null,
 	/**
 	 * Initialise the map according to the given configuration. 
 	 * Based on:
@@ -84,21 +85,12 @@ function B3pmap(){
 	* @returns Returns an object containing the output of the user interaction with the map. Expect an object with the following keys: surface <double>, gml <string of gml>, wkt <array of wkt values>, object-ids <array with object-id's>. 
 	*/
 	this.getOuput = function(){
-
 		var features = [];
 		var output = {
 			"surface": this.getSurface(),
 			"wkt": this.getWKTs(),
 			"gml" : this.getGMLs() ,
 			"object-ids": this.getObjectIds()
-			/*	"image": "base 64 string van plaatje", 
-		        "wkt": "wkt representatie van getekend object", 
-		        "object-ids": [ 
-		            {"object-id": "id 1"}, 
-		            {"object-id": "id 2"}, 
-		            {"object-id": "id 3"} 
-		        ] 
-		        } */
 		};
 
 		return output;
@@ -198,6 +190,10 @@ function B3pmap(){
 		return objectIds;
 	},
 
+	/**
+	* initModus
+	* Initalise this component for the given modus (select/draw)
+	*/
 	this.initModus  = function (config){
 		this.modus = config.input.modus;
 		if(this.modus === "select"){
@@ -252,13 +248,12 @@ function B3pmap(){
 			}
 		};
 	},
-	this.test = null,
 	this.initWFSLayer = function(layerConfig){
 		var me = this;
-		this.test = new ol.source.ServerVector({
+		this.wfsSource = new ol.source.ServerVector({
 		  format: new ol.format.GeoJSON(),
 		  loader: function(extent, resolution, projection) {
-		    var url = layerConfig.url + '?service=WFS&' +
+		  	var url = layerConfig.url + '?service=WFS&' +
 		        'version=1.1.0&request=GetFeature&typename=' + layerConfig.layers +
 		        '&outputFormat=application/json&srsName=EPSG:28992&bbox=' + extent.join(',') + '';
 		    $.ajax({
@@ -267,12 +262,12 @@ function B3pmap(){
 		      dataType: 'text',
 		      success: function(data, status){
 				var c = 0;
-				me.test.addFeatures(me.test.readFeatures(data));
+				me.wfsSource.addFeatures(me.wfsSource.readFeatures(data));
 		      },
 		      error: function(a,b,c){
 		      	var b =0;
 		      }
-		    });
+			    });
 
 		  },
 		/*  strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
@@ -281,12 +276,8 @@ function B3pmap(){
 		  projection: 'EPSG:28992'
 		});
 
-		var loadFeatures = function(response) {
-		  
-		};
-
 		var vector = new ol.layer.Vector({
-		  source: this.test,
+		  source: this.wfsSource,
 		  style: new ol.style.Style({
 		    stroke: new ol.style.Stroke({
 		      color: 'rgba(0, 0, 255, 1.0)',
