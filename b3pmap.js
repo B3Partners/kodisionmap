@@ -111,7 +111,7 @@ function B3pmap(){
 	* Return the output of the user interaction. 
 	* @returns Returns an object containing the output of the user interaction with the map. Expect an object with the following keys: surface <double>, gml <string of gml>, wkt <array of wkt values>, object-ids <array with object-id's>. 
 	*/
-	this.getOuput = function(){
+	this.getOutput = function(){
 		var features = [];
 		var output = {
 			"surface": this.getSurface(),
