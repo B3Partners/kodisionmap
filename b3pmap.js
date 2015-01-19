@@ -87,7 +87,8 @@ function B3pmap(){
 		var output = {
 			"surface": this.getSurface(),
 			"wkt": this.getWKTs(),
-			"gml" : this.getGMLs() 
+			"gml" : this.getGMLs() ,
+			"object-ids": this.getObjectIds()
 			/*	"image": "base 64 string van plaatje", 
 		        "wkt": "wkt representatie van getekend object", 
 		        "object-ids": [ 
@@ -170,6 +171,26 @@ function B3pmap(){
 
 		return gmls;
 	},
+
+	/*
+	* getObjectIds
+	* @returns Returns an array with objects containing the objectIds from the selected features. Only valid when the modus is "select"
+	*/
+	this.getObjectIds = function (){
+		var objectIds = []
+		if(this.modus === "select"){
+			var features = this.select.getFeatures().getArray();
+			for (var i = 0; i < features.length; i++) {
+				var feature = features[i];
+				var objectId = {
+					"object-id" : feature.getId()
+				};
+				objectIds.push(objectId);
+			};
+		}
+		return objectIds;
+	},
+
 	this.initModus  = function (config){
 		this.modus = config.input.modus;
 		if(this.modus === "select"){
