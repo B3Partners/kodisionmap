@@ -79,7 +79,9 @@ function B3pmap(){
 	},
 
 	/**
-	*
+	* getOutput
+	* Return the output of the user interaction. 
+	* @returns Returns an object containing the output of the user interaction with the map. Expect an object with the following keys: surface <double>, gml <string of gml>, wkt <array of wkt values>, object-ids <array with object-id's>. 
 	*/
 	this.getOuput = function(){
 
@@ -101,6 +103,11 @@ function B3pmap(){
 
 		return output;
 	},
+	/**
+	* getSurface
+	* Calculates the surface of all vector features on screen
+	* @returns Value of the total surface of all vector features (drawn of selected).
+	*/
 	this.getSurface = function(){
 		var area = 0;
 		if(this.modus === "draw"){
