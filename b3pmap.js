@@ -274,10 +274,8 @@ function B3pmap(){
     			crossDomain: true,
 				dataType: 'text',
 				success: function(data, status){
-					var splitted = data.split(",");
-					var coords = [parseFloat(splitted[0]),parseFloat(splitted[1])];
-
-					if(!isNaN(coords[0]) && ! isNaN (coords[1])){
+					var coords = me.parseBAG42Response(JSON.parse(data));
+					if(coords !== null && !isNaN(coords[0]) && ! isNaN (coords[1])){
 						var view = me.map.getView();
 						view.setCenter(coords);
 					}
@@ -286,6 +284,18 @@ function B3pmap(){
 					throw "Error collecting features: " + status + " Error given:" + error;
 				}
 			});
+		}
+	},
+
+	this.parseBAG42Response = function (response){
+		if(response.status === "OK" && response.results.length > 0 ){
+			var result = response.results[0];
+			var geometry = result.geometry.location;
+			var geomArray = [geometry.lng, geometry.lat];
+			var geom = proj4(proj4.defs('EPSG:28992'), geomArray);
+			return geom;
+		}else{
+			return null;
 		}
 	},
 
