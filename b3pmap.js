@@ -277,8 +277,11 @@ function B3pmap(){
 				success: function(data, status){
 					var splitted = data.split(",");
 					var coords = [parseFloat(splitted[0]),parseFloat(splitted[1])];
-					var view = me.map.getView();
-					view.setCenter(coords);
+
+					if(!isNaN(coords[0]) && ! isNaN (coords[1])){
+						var view = me.map.getView();
+						view.setCenter(coords);
+					}
 				},
 				error: function(xhr, status, error){
 					throw "Error collecting features: " + status + " Error given:" + error;
