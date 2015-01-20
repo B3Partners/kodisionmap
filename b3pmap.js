@@ -394,8 +394,8 @@ function B3pmap(){
 		var config = {};
 		if(id === "MousePosition"){
 			config.coordinateFormat = ol.coordinate.createStringXY(2);
-		}
-
+		}	
+        
 		var tool = new ol.control[id](config);
 		return tool;
 	},
@@ -404,11 +404,17 @@ function B3pmap(){
 		var slider = false, zoom = false;
 		for (var i = 0; i < tools.length; i++) {
 			var toolConfig = tools[i];
-			if(toolConfig["tool_id"] === "Zoom"){
+			var toolId = toolConfig["tool_id"];
+			if(toolId === "Zoom"){
 				zoom = true;
 			}
-			if(toolConfig["tool_id"] === "ZoomSlider"){
+			if(toolId === "ZoomSlider"){
 				slider = true;
+			}
+			if(toolId === "MousePosition"){
+				var selector = ".ol-mouse-position";
+				var css = "top:auto;bottom: 8px !important;right: 8px;padding:2px;position: absolute;";
+				this.addCSSRule(selector,css);
 			}
 		};
 		if(slider && zoom){    
