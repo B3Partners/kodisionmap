@@ -101,7 +101,7 @@ function B3pmap(){
 	    this.initWMSLayers(this.config.input.wms_layers,layers);
 	    this.initWFSLayers(this.config.input.wfs_layers,layers);
 
-	    this.createMap(layers,this.config.input.initial_zoom || 2, extentAr,projection)
+	    this.createMap(layers,this.config.input.initial_zoom || 2, extentAr,projection, this.config.input.map_id)
 		this.initModus(this.config);
 		this.initTools(this.config.input.tools);
 		this.initCSS(this.config.input.tools);
@@ -250,9 +250,9 @@ function B3pmap(){
 				})
 			});
 			this.draw = new ol.interaction.Draw({
-		      source: source,
-		      type: config.input.draw_modus
-		    });
+				source: source,
+				type: config.input.draw_modus
+			});
 
 
 			this.map.addLayer(this.vectorLayer);
@@ -432,9 +432,9 @@ function B3pmap(){
 		}
 	},
 
-	this.createMap = function(layers, zoom, extent, projection){
+	this.createMap = function(layers, zoom, extent, projection,mapId){
 		this.map = new ol.Map({
-			target: 'map',
+			target: mapId,
 			layers: layers,
 			view: new ol.View({
 				projection: projection,
