@@ -1,10 +1,7 @@
 function B3pmap(){
 	this.scripts= [
-
-    "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js",
-    "ol3/ol-debug.js",
-    "http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js",
-    "http://epsg.io/28992.js"
+	    "http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js",
+	    "http://epsg.io/28992.js"
 	];
 	this.map = null,
 	this.vectorLayer = null,
