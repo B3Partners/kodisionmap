@@ -104,6 +104,7 @@ function B3pmap(){
 	    this.createMap(layers,this.config.input.initial_zoom || 2, extentAr,projection)
 		this.initModus(this.config);
 		this.initTools(this.config.input.tools);
+		this.initCSS(this.config.input.tools);
 		this.openGeolocatorURL(this.config.input);
 	},
 	/**
@@ -397,6 +398,37 @@ function B3pmap(){
 		return tool;
 	},
 
+	this.initCSS = function (tools){
+		var slider = false, zoom = false;
+		for (var i = 0; i < tools.length; i++) {
+			var toolConfig = tools[i];
+			if(toolConfig["tool_id"] === "Zoom"){
+				zoom = true;
+			}
+			if(toolConfig["tool_id"] === "ZoomSlider"){
+				slider = true;
+			}
+		};
+		if(slider && zoom){    
+      		var css = "margin-top: 204px;";
+      		var selector = "#map .ol-zoom .ol-zoom-out";
+      		this.addCSSRule(selector, css);      
+
+
+      		css = "background-color: transparent;top: 2.3em;";
+      		selector = "#map .ol-zoomslider ";
+      		this.addCSSRule(selector, css);   
+
+      		css = " margin-top: 212px;";
+      		selector = "#map  .ol-touch .ol-zoom .ol-zoom-out";
+      		this.addCSSRule(selector, css);    
+
+      		css = " top: 2.75em;";
+      		selector = "#map  .ol-touch .ol-zoomslider";
+      		this.addCSSRule(selector, css);      
+		}
+	},
+
 	this.createMap = function(layers, zoom, extent, projection){
 		this.map = new ol.Map({
 			target: 'map',
@@ -412,6 +444,10 @@ function B3pmap(){
 			controls: []
 		});
 	},
+	/**
+	* loadScript
+	* 
+	*/
 	this.loadScript = function (url, callback){
 		// Adding the script tag to the head as suggested before
 	    var head = document.getElementsByTagName('head')[0];
@@ -431,5 +467,13 @@ function B3pmap(){
 
 	    // Fire the loading
 	    head.appendChild(script);
+	},
+	this.addCSSRule = function(selector, rules, index){
+		var sheet = document.styleSheets[0];
+		if("insertRule" in sheet) {
+			sheet.insertRule(selector + "{" + rules + "}", sheet.cssRules.length);
+		}else if("addRule" in sheet) {
+			sheet.addRule(selector, rules, -1);
+		}
 	}
 }
