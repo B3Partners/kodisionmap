@@ -1,7 +1,9 @@
 function B3pmap(){
 	this.scripts= [
-	    "http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js",
-	    "http://epsg.io/28992.js"
+
+    
+    "http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js",
+    "http://epsg.io/28992.js"
 	];
 	this.map = null,
 	this.vectorLayer = null,
@@ -411,20 +413,20 @@ function B3pmap(){
 		};
 		if(slider && zoom){    
       		var css = "margin-top: 204px;";
-      		var selector = "#map .ol-zoom .ol-zoom-out";
+      		var selector = ".ol-zoom .ol-zoom-out";
       		this.addCSSRule(selector, css);      
 
 
       		css = "background-color: transparent;top: 2.3em;";
-      		selector = "#map .ol-zoomslider ";
+      		selector = ".ol-zoomslider ";
       		this.addCSSRule(selector, css);   
 
       		css = " margin-top: 212px;";
-      		selector = "#map  .ol-touch .ol-zoom .ol-zoom-out";
+      		selector = ".ol-touch .ol-zoom .ol-zoom-out";
       		this.addCSSRule(selector, css);    
 
       		css = " top: 2.75em;";
-      		selector = "#map  .ol-touch .ol-zoomslider";
+      		selector = ".ol-touch .ol-zoomslider";
       		this.addCSSRule(selector, css);      
 		}
 	},

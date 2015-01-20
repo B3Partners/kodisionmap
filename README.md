@@ -7,7 +7,7 @@ Map used and controlled by a Kodision created form
 Hoe te gebruiken
 ----------
 1. Download en extract de zipfile.
-2. Neem de volgende scripts/csscode/css files op in de html pagina (nb. Css code zal later niet meer nodig zijn)
+2. Neem de volgende scripts/csscode/css files op in de html pagina (groote van #map te bepalen):
     ```html
     <link rel="stylesheet" href="<PATH_TO>/ol3/ol.css" type="text/css">
     <style>
