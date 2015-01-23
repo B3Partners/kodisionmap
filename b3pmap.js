@@ -77,7 +77,7 @@ function B3pmap(){
 
     	proj4.defs('http://www.opengis.net/gml/srs/epsg.xml#28992', 
         proj4.defs('EPSG:28992')); 
-/*
+    	
 		var openbasiskaartSource = new ol.source.XYZ({
 			crossOrigin: 'anonymous',
 			extent: extentAr,
@@ -87,7 +87,7 @@ function B3pmap(){
 		var layers = [
 		 new ol.layer.Tile({
 		    source: openbasiskaartSource
-		})];*/
+		})];
 	    this.initWMTSLayers(this.config.input.wmts_layers,layers, extentAr, projection, resolutions, matrixIds);
 	    this.initWMSLayers(this.config.input.wms_layers,layers);
 	    this.initWFSLayers(this.config.input.wfs_layers,layers);
