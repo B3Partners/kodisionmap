@@ -35,11 +35,14 @@ Neem ook een div element op. Hier wordt de kaart in getoond. Geef het id ervan m
               "wfs_layers": [ 
                   { "name" : "NWB wegen wfs", 'url' : "http://geodata.nationaalgeoregister.nl/nwbwegen/wfs"}
               ], 
+              "wmts_layers":[
+              {"name": "BRT", url: "http://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaart", layer: "brtachtergrondkaart"}
+              ],
               "modus": "draw",// "select/draw (selecteren van object in kaart of tekenen van geometrie", 
               "draw_modus":  "Polygon", 
               "select_wfs_layer": "naam van wfs layer", // Doet het nog niet
               "initial_zoom": 6, // "zoomfactor van de kaart bij opstart", 
-              //"geolocator_url": "url naar service waar coordinaten kunnen worden opgevraagd", // Doet het nog niet
+              "geolocator_url": "http://bag42.nl/api/v0/geocode/json?address=", 
               //"format_geolocator_result": "coordx,coordy", // Doet het nog niet
               "tools": [ 
                   {"tool_id": "ZoomSlider"}, 

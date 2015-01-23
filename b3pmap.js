@@ -1,7 +1,7 @@
 function B3pmap(){
 	this.scripts= [
 
-    
+    "ol3/ol-debug.js",
     "http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js",
     "http://epsg.io/28992.js"
 	];
@@ -59,12 +59,8 @@ function B3pmap(){
 		if(this.scripts.length > 0 ){
 			var script = this.scripts[0];
 			this.scripts.splice(0,1);
-			console.log("Load script: " + script);
-			console.log("Remaining scripts: " + this.scripts.join(","));
-			console.log("*******************");
 			this.loadScript(script, this.initSources);
 		}else{
-			console.log("Init the rest");
 			this.initComponent();
 		}
 	},
@@ -81,22 +77,18 @@ function B3pmap(){
 
     	proj4.defs('http://www.opengis.net/gml/srs/epsg.xml#28992', 
         proj4.defs('EPSG:28992')); 
-
-		var layers = [ new ol.layer.Tile({
+/*
+		var openbasiskaartSource = new ol.source.XYZ({
+			crossOrigin: 'anonymous',
 			extent: extentAr,
-			source: new ol.source.WMTS({
-				url: 'http://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaart',
-				layer: 'brtachtergrondkaart',
-				matrixSet: 'EPSG:28992',
-				format: 'image/png',
-				projection: projection,
-				tileGrid: new ol.tilegrid.WMTS({
-					origin: ol.extent.getTopLeft(extentAr),
-					resolutions: resolutions,
-					matrixIds: matrixIds
-				})
-			})
-	    })];
+			projection: projection,
+			url: 'http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm@rd/{z}/{x}/{-y}.png'
+		});
+		var layers = [
+		 new ol.layer.Tile({
+		    source: openbasiskaartSource
+		})];*/
+	    this.initWMTSLayers(this.config.input.wmts_layers,layers, extentAr, projection, resolutions, matrixIds);
 	    this.initWMSLayers(this.config.input.wms_layers,layers);
 	    this.initWFSLayers(this.config.input.wfs_layers,layers);
 
@@ -117,11 +109,29 @@ function B3pmap(){
 			"surface": this.getSurface(),
 			"wkt": this.getWKTs(),
 			"gml" : this.getGMLs() ,
-			"object-ids": this.getObjectIds()
+			"object-ids": this.getObjectIds(),
+			"image": this.getBase64()
 		};
-
 		return output;
 	},
+  	this.baseimg = null,
+  	this.getBase64 = function(){
+  		var me = this;
+		me.map.once('postcompose', function(event) {
+			var canvas = event.context.canvas;
+			me.baseimg =  canvas.toDataURL();
+		});
+		me.map.renderSync();
+		return this.returnImage();
+  	},
+
+  	this.returnImage = function(){
+  		if(this.baseimg !== null){
+  			return this.baseimg;
+  		}else{
+  			setTimeout(this.returnImage, 100);
+  		}
+  	},
 	/**
 	* getSurface
 	* Calculates the surface of all vector features on screen
@@ -297,6 +307,32 @@ function B3pmap(){
 		}else{
 			return null;
 		}
+	},
+	this.initWMTSLayers = function(layersConfig, layers, extentAr, projection, resolutions, matrixIds){
+		for (var i = 0 ; i < layersConfig.length ;i++){
+			var config = layersConfig[0];
+			var layer = this.initWMTSLayer(config, extentAr, projection, resolutions, matrixIds);
+			layers.push(layer);
+		}
+	},
+
+	this.initWMTSLayer = function (layerConfig, extentAr, projection, resolutions, matrixIds){
+		var layer = new ol.layer.Tile({
+			extent: extentAr,
+			source: new ol.source.WMTS({
+				url: layerConfig.url,
+				layer: layerConfig.layer,
+				matrixSet: 'EPSG:28992',
+				format: layerConfig.format || 'image/png',
+				projection: projection,
+				tileGrid: new ol.tilegrid.WMTS({
+					origin: ol.extent.getTopLeft(extentAr),
+					resolutions: resolutions,
+					matrixIds: matrixIds
+				})
+			})
+	    })
+	    return layer;
 	},
 
 	/**
