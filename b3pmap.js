@@ -15,28 +15,38 @@ function B3pmap(){
 	/**
 	 * Initialise the map according to the given configuration. 
 	 * Based on:
-		 { 
-		    "input": { 
-		        "wms_layers": [ 
-		            {"name": "kaartlaag 1", "url": "wms url 1 naar kaartlaag"}, 
-		            {"name": "kaartlaag 2", "url": "wms url 2 naar kaartlaag"}, 
-		            {"name": "kaartlaag 3", "url": "wms url 3 naar kaartlaag"} 
-		        ], 
-		        "wfs_layers": [ 
-		            {"name": "kaartlaag 1", "url": "wfs url 1 naar kaartlaag"} 
-		        ], 
-		        "modus": "select/draw (selecteren van object in kaart of tekenen van geometrie", 
-		        "draw_modus": "point/polygon", 
-		              "select_wfs_layer": "naam van wfs layer", 
-		        "initial_zoom": "zoomfactor van de kaart bij opstart", 
-		        "geolocator_url": "url naar service waar coordinaten kunnen worden opgevraagd", 
-		        "format_geolocator_result": "coordx,coordy", 
-		        "tools": [ 
-		            {"tool_id": "id van tool die aan moet staan in de kaart 1"}, 
-		            {"tool_id": "id van tool die aan moet staan in de kaart 2"}, 
-		            {"tool_id": "id van tool die aan moet staan in de kaart 3"} 
-		        ] 
-		    }, 
+		   "input": { 
+	          "map_id" : "mad",
+	          "wms_layers": [ 
+	        //  { "name":'NWB wegen', "url" : "http://geodata.nationaalgeoregister.nl/nwbwegen/wms", layers: "wegvakken"},
+	         //  { "name":'Nationale parken', "url" : "http://geodata.nationaalgeoregister.nl/nationaleparken/wms", "layers" : "nationaleparken"}
+	          ], 
+	          "wfs_layers": [
+	          //  { "name" : "NWB wegen wfs", 'url' : "http://geodata.nationaalgeoregister.nl/nwbwegen/wfs"}
+	          ], 
+	          "wmts_layers":[
+	            {
+	          //      "name": "BRT", url: "http://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaart", layer: "brtachtergrondkaart"
+	                //"name": "BRT", url: "http://geodata.nationaalgeoregister.nl/tiles/service/wmts/", layer: "brtachtergrondkaartgrijstijdelijk"
+	            }
+	          ],
+	          "modus": "draw",// "select/draw (selecteren van object in kaart of tekenen van geometrie", 
+	          "draw_modus":  "Polygon", 
+	          "select_wfs_layer": "naam van wfs layer", 
+	          "initial_zoom": 13, // "zoomfactor van de kaart bij opstart", 
+	          "geolocator_url": "http://bag42.nl/api/v0/geocode/json?address=zonnebaan 12c, utrecht", 
+	          "format_geolocator_result": "coordx,coordy", 
+	          "tools": [
+	            {"tool_id": "MousePosition"}, 
+	            {"tool_id": "ScaleLine"}, 
+	            {"tool_id": "Zoom"}, 
+	            {"tool_id": "ZoomSlider"}
+	          ],
+	          restore:{
+	            wkt: ["POLYGON((80268.41871976599 454666.20539748564,80241.53871976599 455123.1653974856,80382.65871976598 455183.64539748564,80530.498719766 454894.6853974856,80268.41871976599 454666.20539748564))", "POLYGON((80295.298719766 454619.1653974856,81088.25871976599 454236.1253974856,81330.17871976599 454746.84539748565,80295.298719766 454619.1653974856))", "POLYGON((83023.61871976599 456124.4453974856,83312.578719766 455318.04539748555,83614.97871976599 455385.24539748556,83581.37871976598 456144.6053974855,83023.61871976599 456124.4453974856))"]
+	          } 
+	        }
+	      },
 		    "output": { 
 		        "image": "base 64 string van plaatje", 
 		        "surface": "berekend oppervlak (0 indien punt)", 
@@ -96,7 +106,12 @@ function B3pmap(){
 		this.initModus(this.config);
 		this.initTools(this.config.input.tools);
 		this.initCSS(this.config.input.tools);
-		this.openGeolocatorURL(this.config.input);
+
+		if(this.config.input.restore){
+			this.restore(this.config.input.restore);
+		}else{
+			this.openGeolocatorURL(this.config.input);
+		}
 	},
 	/**
 	* getOutput
@@ -308,6 +323,28 @@ function B3pmap(){
 			return null;
 		}
 	},
+	/**
+	*restore: {
+          wkt:[],
+
+      }
+	*/
+	this.restore = function(restoreObject){
+		var wkts = restoreObject.wkt;
+
+		var wktParser = new ol.format.WKT();
+		var features = [];
+		for (var i = 0; i < wkts.length; i++) {
+			var wkt = wkts[i];
+			var feature = wktParser.readFeature(wkt);
+			features.push(feature.getGeometry());
+		}
+
+		var geomcollection = new ol.geom.GeometryCollection();
+		geomcollection.setGeometries(features);
+		this.map.getView().fitExtent(geomcollection.getExtent(), this.map.getSize());
+	},
+
 	this.initWMTSLayers = function(layersConfig, layers, extentAr, projection, resolutions, matrixIds){
 		for (var i = 0 ; i < layersConfig.length ;i++){
 			var config = layersConfig[0];

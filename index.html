@@ -5,7 +5,7 @@
     <style>
     #mad{
       width:80%;
-      height:80%;
+      height:500px;
     }
 
     </style>
@@ -17,46 +17,8 @@
     
   </head>
   <body>
-    <h1>Kodision Map</h1>
     <div id="mad"></div>
     <script type="text/javascript">
-     /* var config = { 
-          "input": { 
-              "wms_layers": [ 
-                  { "name":'NWB wegen', "url" : "http://geodata.nationaalgeoregister.nl/nwbwegen/wms", layers: "wegvakken"},
-                  { "name":'Nationale parken', "url" : "http://geodata.nationaalgeoregister.nl/nationaleparken/wms", "layers" : "nationaleparken"}
-              ], 
-              "wfs_layers": [ 
-                  
-                  //{ "name" : "NWB wegen wfs", 'url' : "http://geodata.nationaalgeoregister.nl/nwbwegen/wfs", layers: "wegvakken"}
-                //  { "name" : "NWB wegen wfs", 'url' : "http://192.168.1.18:8084/geoserver/test/ows", layers: "test:gemeente"}
-               //   { "name" : "Flamingo geoserver", 'url' : "http://flamingo4.b3p.nl/geoserver/ows", layers:"cbs:buurten"}
-              ], 
-              "modus": "select",// "select/draw (selecteren van object in kaart of tekenen van geometrie", 
-              "draw_modus":  "Polygon", 
-                    "select_wfs_layer": "naam van wfs layer", 
-              "initial_zoom": 6, // "zoomfactor van de kaart bij opstart", 
-              "geolocator_url": "http://192.168.1.18/coords",//"url naar service waar coordinaten kunnen worden opgevraagd", 
-              "format_geolocator_result": "coordx,coordy", 
-              "tools": [ 
-                  {"tool_id": "MousePosition"}, 
-                  {"tool_id": "ScaleLine"}, 
-                  {"tool_id": "Zoom"}, 
-                //  {"tool_id": "ZoomSlider"}
-              ] 
-          }, 
-          "output": { 
-              "image": "base 64 string van plaatje", 
-              "surface": "berekend oppervlak (0 indien punt)", 
-              "wkt": "wkt representatie van getekend object", 
-              "gml": "gml representatie van getekend object", 
-              "object-ids": [ 
-                  {"object-id": "id 1"}, 
-                  {"object-id": "id 2"}, 
-                  {"object-id": "id 3"} 
-              ] 
-              } 
-      };*/
       var config = {
         "input": { 
           "map_id" : "mad",
@@ -82,9 +44,12 @@
           "tools": [
             {"tool_id": "MousePosition"}, 
             {"tool_id": "ScaleLine"}, 
-                 {"tool_id": "Zoom"}, 
-       //     {"tool_id": "ZoomSlider"}
-          ] 
+            {"tool_id": "Zoom"}, 
+            {"tool_id": "ZoomSlider"}
+          ],
+          restore:{
+            wkt: ["POLYGON((80268.41871976599 454666.20539748564,80241.53871976599 455123.1653974856,80382.65871976598 455183.64539748564,80530.498719766 454894.6853974856,80268.41871976599 454666.20539748564))", "POLYGON((80295.298719766 454619.1653974856,81088.25871976599 454236.1253974856,81330.17871976599 454746.84539748565,80295.298719766 454619.1653974856))", "POLYGON((83023.61871976599 456124.4453974856,83312.578719766 455318.04539748555,83614.97871976599 455385.24539748556,83581.37871976598 456144.6053974855,83023.61871976599 456124.4453974856))"]
+          } 
         }
       };
 
@@ -92,8 +57,5 @@
       bm.init(config);
 
     </script>
-
-          <a id="export-png" class="btn" download="map.png">Export PNG</a>
-          <canvas id="exportDest"/>
   </body>
 </html>
