@@ -72,7 +72,8 @@ Neem ook een div element op. Hier wordt de kaart in getoond. Geef het id ervan m
                   {"object-id": "id 1"}, 
                   {"object-id": "id 2"}, 
                   {"object-id": "id 3"} 
-              ] 
+              ],
+              "image" : "base64 representatie van het kaartbeeld"
               } 
       	};
       */
