@@ -49,9 +49,14 @@ Neem ook een div element op. Hier wordt de kaart in getoond. Geef het id ervan m
                   {"tool_id": "MousePosition"}, 
                   {"tool_id": "ScaleLine"}, 
                   {"tool_id": "Zoom"}
-              ] 
-          }
-          ); 
+              ] ,
+
+              restore: {
+                  wkt:[],
+
+              }
+            }
+          }; 
          
       var bm = new B3pmap(); // Maak het object voor de controle over de kaart
       bm.init(config); 		 // Initialiseer en start de kaart
