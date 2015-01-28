@@ -1,7 +1,5 @@
 function B3pmap(){
 	this.scripts= [
-
-    "ol3/ol-debug.js",
     "http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js",
     "http://epsg.io/28992.js"
 	];
@@ -107,7 +105,7 @@ function B3pmap(){
 		this.initTools(this.config.input.tools);
 		this.initCSS(this.config.input.tools);
 
-		if(this.config.input.restore){
+		if(this.config.input.restore && this.config.input.restore.wkt.length > 0 ){
 			this.restore(this.config.input.restore);
 		}else{
 			this.openGeolocatorURL(this.config.input);
