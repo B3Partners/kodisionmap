@@ -344,7 +344,37 @@ function B3pmap(){
 		geomcollection.setGeometries(geometries);
 		this.map.getView().fitExtent(geomcollection.getExtent(), this.map.getSize());
 
+		var selector = ".rotate-north";
+		var css = "position: absolute;top: 265px;left: 8px;background: rgba(255,255,255,0.4);border-radius: 4px;padding: 2px;";
+		this.addCSSRule(selector,css);
+
+		selector = ".ol-touch .rotate-north ";
+		css = "top: 265px;";
+		this.addCSSRule(selector,css);
+
+		selector = ".rotate-north a";
+		css = "display: block;color: white;font-size: 16px;font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;font-weight: bold;margin: 1px;text-decoration: none;text-align: center;border-radius: 2px;height: 22px;width: 75 px;background: rgba(0,60,136,0.5);";
+		this.addCSSRule(selector,css);
+
+		selector = ".ol-touch .rotate-north a ";
+		css = "font-size: 20px;height: 30px;width: 100px;line-height: 26px;";
+		this.addCSSRule(selector,css);
+
+		selector = ".rotate-north a:hover";
+		css = "background: rgba(0,60,136,0.7);";
+		this.addCSSRule(selector,css);
+
+
 		this.vectorLayer.getSource().addFeatures(features);
+
+
+		/**
+		 * @constructor
+		 * @extends {ol.control.Control}
+		 * @param {Object=} opt_options Control options.
+		 */
+		ol.inherits(this.clearControl, ol.control.Control);
+		this.map.addControl( new this.clearControl ({ me :this}));
 	},
 
 	this.initWMTSLayers = function(layersConfig, layers, extentAr, projection, resolutions, matrixIds){
@@ -568,5 +598,33 @@ function B3pmap(){
 		}else if("addRule" in sheet) {
 			sheet.addRule(selector, rules, -1);
 		}
+	},
+	this.clearControl = function(opt_options) {
+		
+		var options = opt_options || {};
+		this.me = options.me;
+		var anchor = document.createElement('a');
+		anchor.href = '#rotate-north';
+		anchor.innerHTML = 'Reset';
+
+		var this_ = this;
+		var handleRotateNorth = function(e) {
+		// prevent #rotate-north anchor from getting appended to the url
+		e.preventDefault();
+		this_.me.vectorLayer.getSource().clear();
+		};
+
+		anchor.addEventListener('click', handleRotateNorth, false);
+		anchor.addEventListener('touchstart', handleRotateNorth, false);
+
+		var element = document.createElement('div');
+		element.className = 'rotate-north ol-unselectable';
+		element.appendChild(anchor);
+
+		ol.control.Control.call(this, {
+			element: element,
+			target: options.target
+		});
+
 	}
 }
