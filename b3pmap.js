@@ -169,7 +169,9 @@ function B3pmap(){
 			var features = this.select.getFeatures().getArray();
 			for (var i = 0; i < features.length; i++) {
 				var feature = features[i];
-				area += feature.getGeometry().getArea();
+				if(feature && feature.getGeometry && feature.getGeometry().getArea ){
+					area += feature.getGeometry().getArea();
+				}
 			};
 
 		}
@@ -356,7 +358,7 @@ function B3pmap(){
 		css = "display: block;color: white;font-size: 16px;font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;font-weight: bold;margin: 1px;text-decoration: none;text-align: center;border-radius: 2px;height: 22px;width: 75 px;background: rgba(0,60,136,0.5);";
 		this.addCSSRule(selector,css);
 
-		selector = ".ol-touch .rotate-north a ";
+		selector = ".ol-touch .rotate-north a";
 		css = "font-size: 20px;height: 30px;width: 100px;line-height: 26px;";
 		this.addCSSRule(selector,css);
 
