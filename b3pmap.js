@@ -331,16 +331,20 @@ function B3pmap(){
 		var wkts = restoreObject.wkt;
 
 		var wktParser = new ol.format.WKT();
+		var geometries = [];
 		var features = [];
 		for (var i = 0; i < wkts.length; i++) {
 			var wkt = wkts[i];
 			var feature = wktParser.readFeature(wkt);
-			features.push(feature.getGeometry());
+			features.push(feature);
+			geometries.push(feature.getGeometry());
 		}
 
 		var geomcollection = new ol.geom.GeometryCollection();
-		geomcollection.setGeometries(features);
+		geomcollection.setGeometries(geometries);
 		this.map.getView().fitExtent(geomcollection.getExtent(), this.map.getSize());
+
+		this.vectorLayer.getSource().addFeatures(features);
 	},
 
 	this.initWMTSLayers = function(layersConfig, layers, extentAr, projection, resolutions, matrixIds){
@@ -414,8 +418,8 @@ function B3pmap(){
 		  source: this.wfsSource,
 		  style: new ol.style.Style({
 		    stroke: new ol.style.Stroke({
-		      color: 'rgba(0, 0, 255, 1.0)',
-		      width: 2
+		     // color: 'rgba(0, 0, 255, 1.0)',
+		     // width: 2
 		    })
 		  })
 		});
