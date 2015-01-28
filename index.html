@@ -27,7 +27,7 @@
          //  { "name":'Nationale parken', "url" : "http://geodata.nationaalgeoregister.nl/nationaleparken/wms", "layers" : "nationaleparken"}
           ], 
           "wfs_layers": [
-          //  { "name" : "NWB wegen wfs", 'url' : "http://geodata.nationaalgeoregister.nl/nwbwegen/wfs"}
+            { "name" : "NWB wegen wfs", 'url' : "http://geodata.nationaalgeoregister.nl/nwbwegen/wfs", layers: "wegvakken"}
           ], 
           "wmts_layers":[
             {
@@ -35,9 +35,9 @@
                 //"name": "BRT", url: "http://geodata.nationaalgeoregister.nl/tiles/service/wmts/", layer: "brtachtergrondkaartgrijstijdelijk"
             }
           ],
-          "modus": "draw",// "select/draw (selecteren van object in kaart of tekenen van geometrie", 
+          "modus": "select",// "select/draw (selecteren van object in kaart of tekenen van geometrie", 
           "draw_modus":  "Polygon", 
-          "select_wfs_layer": "naam van wfs layer", 
+          "select_wfs_layer": "wegvakken", 
           "initial_zoom": 9, // "zoomfactor van de kaart bij opstart", 
           "geolocator_url": "http://bag42.nl/api/v0/geocode/json?address=grote markt,Breda", 
           "format_geolocator_result": "coordx,coordy", 
