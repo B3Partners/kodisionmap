@@ -29,30 +29,41 @@ Neem ook een div element op. Hier wordt de kaart in getoond. Geef het id ervan m
           "input": { 
               "map_id" : "map",
               "wms_layers": [ 
-                  { "name":'NWB wegen', "url" : "http://geodata.nationaalgeoregister.nl/nwbwegen/wms", layers: "wegvakken"},
-                  { "name":'Nationale parken', "url" : "http://geodata.nationaalgeoregister.nl/nationaleparken/wms", "layers" : "nationaleparken"}
+                  { 
+                    "name":'<NAAM>', "url" : "<URL>", layers: "<LAAG_NAAM>"
+                  }
               ], 
               "wfs_layers": [ 
-                  { "name" : "NWB wegen wfs", 'url' : "http://geodata.nationaalgeoregister.nl/nwbwegen/wfs"}
+                  { 
+                    "name":'<NAAM>', "url" : "<URL>", layers: "<LAAG_NAAM>"
+                  }
               ], 
               "wmts_layers":[
-              {"name": "BRT", url: "http://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaart", layer: "brtachtergrondkaart"}
+                {
+                  "name": "<NAAM>", url: "<URL>", layer: "<LAYER>"
+                  // Voorbeeld: "name": "BRT", url: "http://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaart", layer: "brtachtergrondkaart"
+                }
+              ],
+              "tms_layers":[
+                "<URL_MET_PARAMETERS"
+                // Voorbeeld: http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm@rd/{z}/{x}/{-y}.png: zie de {z},{x} en {-y} parameters in de string. Deze kan 1-op-1 overgenomen worden.
               ],
               "modus": "draw",// "select/draw (selecteren van object in kaart of tekenen van geometrie", 
               "draw_modus":  "Polygon", 
-              "select_wfs_layer": "naam van wfs layer", // Doet het nog niet
               "initial_zoom": 6, // "zoomfactor van de kaart bij opstart", 
-              "geolocator_url": "http://bag42.nl/api/v0/geocode/json?address=", 
-              //"format_geolocator_result": "coordx,coordy", // Doet het nog niet
+              "geolocator_url": "http://bag42.nl/api/v0/geocode/json?address=<ADDRESS>", 
               "tools": [ 
-                  {"tool_id": "ZoomSlider"}, 
-                  {"tool_id": "MousePosition"}, 
-                  {"tool_id": "ScaleLine"}, 
-                  {"tool_id": "Zoom"}
-              ] ,
-
+                {
+                  "tool_id" : "<ID"
+                }
+                // Mogelijke waardes: ZoomSlider, MousePosition, ScaleLine, Zoom
+                // Voorbeeld: {"tool_id": "ZoomSlider"}
+              ],
               restore: {
-                  wkt:[],
+                  wkt:[
+                    "<WKT_REPRESENTATIE>"
+                    // Voorbeeld: "POLYGON((80268.41871976599 454666.20539748564,80241.53871976599 455123.1653974856,80382.65871976598 455183.64539748564,80530.498719766 454894.6853974856,80268.41871976599 454666.20539748564))"
+                  ],
 
               }
             }

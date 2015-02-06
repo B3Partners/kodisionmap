@@ -30,7 +30,6 @@ function B3pmap(){
 	          ],
 	          "modus": "draw",// "select/draw (selecteren van object in kaart of tekenen van geometrie", 
 	          "draw_modus":  "Polygon", 
-	          "select_wfs_layer": "naam van wfs layer", 
 	          "initial_zoom": 13, // "zoomfactor van de kaart bij opstart", 
 	          "geolocator_url": "http://bag42.nl/api/v0/geocode/json?address=zonnebaan 12c, utrecht", 
 	          "format_geolocator_result": "coordx,coordy", 
@@ -85,17 +84,8 @@ function B3pmap(){
 
     	proj4.defs('http://www.opengis.net/gml/srs/epsg.xml#28992', 
         proj4.defs('EPSG:28992')); 
-    	
-		var openbasiskaartSource = new ol.source.XYZ({
-			crossOrigin: 'anonymous',
-			extent: extentAr,
-			projection: projection,
-			url: 'http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm@rd/{z}/{x}/{-y}.png'
-		});
-		var layers = [
-		 new ol.layer.Tile({
-		    source: openbasiskaartSource
-		})];
+    	var layers = [];
+		this.initTMSLayers(this.config.input.tms_layers, layers, extentAr, projection);
 	    this.initWMTSLayers(this.config.input.wmts_layers,layers, extentAr, projection, resolutions, matrixIds);
 	    this.initWMSLayers(this.config.input.wms_layers,layers);
 	    this.initWFSLayers(this.config.input.wfs_layers,layers);
@@ -111,6 +101,26 @@ function B3pmap(){
 			this.openGeolocatorURL(this.config.input);
 		}
 		this.addResetButton();
+	},
+
+	this.initTMSLayers = function(tmslayers,layers,extentAr, projection){
+		for(var i = 0 ; i < tmslayers.length; i++){
+			var layer = tmslayers[i];
+			var tms = this.initTMSLayer(layer,extentAr, projection);
+			layers.push(tms);
+		}
+	},
+	this.initTMSLayer = function(layer,extentAr, projection){
+		var openbasiskaartSource = new ol.source.XYZ({
+			crossOrigin: 'anonymous',
+			extent: extentAr,
+			projection: projection,
+			url: layer//'http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm@rd/{z}/{x}/{-y}.png'
+		});
+		var tms = new ol.layer.Tile({
+		    source: openbasiskaartSource
+		});
+		return tms;
 	},
 	/**
 	* getOutput
