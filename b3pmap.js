@@ -578,12 +578,12 @@ function B3pmap(){
 		var options = opt_options || {};
 		this.me = options.me;
 		var anchor = document.createElement('a');
-		anchor.href = '#rotate-north';
+		anchor.href = '#reset-button';
 		anchor.innerHTML = 'Wissen';
 
 		var this_ = this;
 		var handleRotateNorth = function(e) {
-		// prevent #rotate-north anchor from getting appended to the url
+		// prevent #reset-button anchor from getting appended to the url
 		e.preventDefault();
 		this_.me.vectorLayer.getSource().clear();
 		};
@@ -592,7 +592,7 @@ function B3pmap(){
 		anchor.addEventListener('touchstart', handleRotateNorth, false);
 
 		var element = document.createElement('div');
-		element.className = 'rotate-north ol-unselectable';
+		element.className = 'reset-button ol-unselectable';
 		element.appendChild(anchor);
 
 		ol.control.Control.call(this, {
@@ -603,23 +603,23 @@ function B3pmap(){
 	},
 
 	this.addResetButton = function(){
-		var selector = ".rotate-north";
+		var selector = ".reset-button";
 		var css = "position: absolute;top: 265px;left: 8px;background: rgba(255,255,255,0.4);border-radius: 4px;padding: 5px;";
 		this.addCSSRule(selector,css);
 
-		selector = ".ol-touch .rotate-north ";
+		selector = ".ol-touch .reset-button ";
 		css = "top: 265px;";
 		this.addCSSRule(selector,css);
 
-		selector = ".rotate-north a";
+		selector = ".reset-button a";
 		css = "display: block;color: white;font-size: 16px;font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;font-weight: bold;margin: 1px;text-decoration: none;text-align: center;border-radius: 2px;height: 22px;width: 80px;background: rgba(0,60,136,0.5);";
 		this.addCSSRule(selector,css);
 
-		selector = ".ol-touch .rotate-north a";
+		selector = ".ol-touch .reset-button a";
 		css = "font-size: 20px;height: 30px;width: 120px;line-height: 26px;";
 		this.addCSSRule(selector,css);
 
-		selector = ".rotate-north a:hover";
+		selector = ".reset-button a:hover";
 		css = "background: rgba(0,60,136,0.7);";
 		this.addCSSRule(selector,css);
 
