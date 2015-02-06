@@ -110,6 +110,7 @@ function B3pmap(){
 		}else{
 			this.openGeolocatorURL(this.config.input);
 		}
+		this.addResetButton();
 	},
 	/**
 	* getOutput
@@ -346,37 +347,8 @@ function B3pmap(){
 		geomcollection.setGeometries(geometries);
 		this.map.getView().fitExtent(geomcollection.getExtent(), this.map.getSize());
 
-		var selector = ".rotate-north";
-		var css = "position: absolute;top: 265px;left: 8px;background: rgba(255,255,255,0.4);border-radius: 4px;padding: 2px;";
-		this.addCSSRule(selector,css);
-
-		selector = ".ol-touch .rotate-north ";
-		css = "top: 265px;";
-		this.addCSSRule(selector,css);
-
-		selector = ".rotate-north a";
-		css = "display: block;color: white;font-size: 16px;font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;font-weight: bold;margin: 1px;text-decoration: none;text-align: center;border-radius: 2px;height: 22px;width: 75 px;background: rgba(0,60,136,0.5);";
-		this.addCSSRule(selector,css);
-
-		selector = ".ol-touch .rotate-north a";
-		css = "font-size: 20px;height: 30px;width: 100px;line-height: 26px;";
-		this.addCSSRule(selector,css);
-
-		selector = ".rotate-north a:hover";
-		css = "background: rgba(0,60,136,0.7);";
-		this.addCSSRule(selector,css);
-
-
 		this.vectorLayer.getSource().addFeatures(features);
 
-
-		/**
-		 * @constructor
-		 * @extends {ol.control.Control}
-		 * @param {Object=} opt_options Control options.
-		 */
-		ol.inherits(this.clearControl, ol.control.Control);
-		this.map.addControl( new this.clearControl ({ me :this}));
 	},
 
 	this.initWMTSLayers = function(layersConfig, layers, extentAr, projection, resolutions, matrixIds){
@@ -607,7 +579,7 @@ function B3pmap(){
 		this.me = options.me;
 		var anchor = document.createElement('a');
 		anchor.href = '#rotate-north';
-		anchor.innerHTML = 'Reset';
+		anchor.innerHTML = 'Wissen';
 
 		var this_ = this;
 		var handleRotateNorth = function(e) {
@@ -628,5 +600,37 @@ function B3pmap(){
 			target: options.target
 		});
 
+	},
+
+	this.addResetButton = function(){
+		var selector = ".rotate-north";
+		var css = "position: absolute;top: 265px;left: 8px;background: rgba(255,255,255,0.4);border-radius: 4px;padding: 5px;";
+		this.addCSSRule(selector,css);
+
+		selector = ".ol-touch .rotate-north ";
+		css = "top: 265px;";
+		this.addCSSRule(selector,css);
+
+		selector = ".rotate-north a";
+		css = "display: block;color: white;font-size: 16px;font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;font-weight: bold;margin: 1px;text-decoration: none;text-align: center;border-radius: 2px;height: 22px;width: 80px;background: rgba(0,60,136,0.5);";
+		this.addCSSRule(selector,css);
+
+		selector = ".ol-touch .rotate-north a";
+		css = "font-size: 20px;height: 30px;width: 120px;line-height: 26px;";
+		this.addCSSRule(selector,css);
+
+		selector = ".rotate-north a:hover";
+		css = "background: rgba(0,60,136,0.7);";
+		this.addCSSRule(selector,css);
+
+
+
+		/**
+		 * @constructor
+		 * @extends {ol.control.Control}
+		 * @param {Object=} opt_options Control options.
+		 */
+		ol.inherits(this.clearControl, ol.control.Control);
+		this.map.addControl( new this.clearControl ({ me :this}));
 	}
 }

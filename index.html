@@ -28,7 +28,7 @@
           {name:"wmslufo", "url": "http://geoservices.breda.nl/ArcGIS/services/extern_breda/luchtfoto/MapServer/WMSServer", layers :"0"}
           ], 
           "wfs_layers": [
-            { "name" : "NWB wegen wfs", 'url' : "http://geodata.nationaalgeoregister.nl/nwbwegen/wfs", layers: "wegvakken"}
+         //   { "name" : "NWB wegen wfs", 'url' : "http://geodata.nationaalgeoregister.nl/nwbwegen/wfs", layers: "wegvakken"}
           ], 
           "wmts_layers":[
             {
@@ -36,7 +36,7 @@
                 //"name": "BRT", url: "http://geodata.nationaalgeoregister.nl/tiles/service/wmts/", layer: "brtachtergrondkaartgrijstijdelijk"
             }
           ],
-          "modus": "select",// "select/draw (selecteren van object in kaart of tekenen van geometrie", 
+          "modus": "draw",// "select/draw (selecteren van object in kaart of tekenen van geometrie", 
           "draw_modus":  "Polygon", 
           "select_wfs_layer": "wegvakken", 
           "initial_zoom": 9, // "zoomfactor van de kaart bij opstart", 
