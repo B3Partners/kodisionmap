@@ -31,11 +31,13 @@ Neem ook een div element op. Hier wordt de kaart in getoond. Geef het id ervan m
               "wms_layers": [ 
                   { 
                     "name":'<NAAM>', "url" : "<URL>", layers: "<LAAG_NAAM>"
+                    // Voorbeeld:  { "name":'NWB wegen', "url" : "http://geodata.nationaalgeoregister.nl/nwbwegen/wms", layers: "wegvakken"},
                   }
               ], 
               "wfs_layers": [ 
                   { 
                     "name":'<NAAM>', "url" : "<URL>", layers: "<LAAG_NAAM>"
+                    // Voorbeeld:  { "name" : "NWB wegen wfs", 'url' : "http://geodata.nationaalgeoregister.nl/nwbwegen/wfs", layers: "wegvakken"}
                   }
               ], 
               "wmts_layers":[
@@ -48,15 +50,15 @@ Neem ook een div element op. Hier wordt de kaart in getoond. Geef het id ervan m
                 "<URL_MET_PARAMETERS"
                 // Voorbeeld: http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm@rd/{z}/{x}/{-y}.png: zie de {z},{x} en {-y} parameters in de string. Deze kan 1-op-1 overgenomen worden.
               ],
-              "modus": "draw",// "select/draw (selecteren van object in kaart of tekenen van geometrie", 
-              "draw_modus":  "Polygon", 
+              "modus": "draw",// Mogelijke waarden: select, draw : selecteren van object in kaart (via een wfs-laag) of tekenen van geometrie", 
+              "draw_modus":  "LineString", // Mogelijke waarden: Polygon, LineString, Point
               "initial_zoom": 6, // "zoomfactor van de kaart bij opstart", 
               "geolocator_url": "http://bag42.nl/api/v0/geocode/json?address=<ADDRESS>", 
               "tools": [ 
                 {
                   "tool_id" : "<ID"
                 }
-                // Mogelijke waardes: ZoomSlider, MousePosition, ScaleLine, Zoom
+                // Mogelijke waardes van tool_id: ZoomSlider, MousePosition, ScaleLine, Zoom
                 // Voorbeeld: {"tool_id": "ZoomSlider"}
               ],
               restore: {
