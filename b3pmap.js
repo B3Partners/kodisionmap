@@ -1,8 +1,4 @@
 function B3pmap(){
-	this.scripts= [
-    "//cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.3/proj4.js",
-    "//epsg.io/28992.js"
-	];
 	this.map = null,
 	this.vectorLayer = null,
 	this.draw = null,
@@ -59,20 +55,15 @@ function B3pmap(){
 	 */
 	this.init = function(config){
 		this.config = config;
-		this.initSources();
+		this.initComponent();
 	},
+	
+		this.initComponent = function (){
+        // proj4.defs('', 
+        // proj4.defs('EPSG:28992')); 
+        proj4.defs("EPSG:28992","+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs");
+        proj4.defs('http://www.opengis.net/gml/srs/epsg.xml#28992', proj4.defs('EPSG:28992'));
 
-	this.initSources = function(){
-		if(this.scripts.length > 0 ){
-			var script = this.scripts[0];
-			this.scripts.splice(0,1);
-			this.loadScript(script, this.initSources);
-		}else{
-			this.initComponent();
-		}
-	},
-
-	this.initComponent = function (){
 		var extentAr = [-285401.0,22598.0,595401.0,903401.0];
       	var resolutions = [3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84, 0.42,0.21,0.105];
 		var matrixIds = [];
@@ -82,8 +73,6 @@ function B3pmap(){
 		var projection = ol.proj.get('EPSG:28992');
 		projection.setExtent(extentAr);
 
-    	proj4.defs('http://www.opengis.net/gml/srs/epsg.xml#28992', 
-        proj4.defs('EPSG:28992')); 
     	var layers = [];
 		this.initTMSLayers(this.config.input.tms_layers, layers, extentAr, projection);
 	    this.initWMTSLayers(this.config.input.wmts_layers,layers, extentAr, projection, resolutions, matrixIds);
@@ -550,30 +539,7 @@ function B3pmap(){
 			controls: []
 		});
 	},
-	/**
-	* loadScript
-	* 
-	*/
-	this.loadScript = function (url, callback){
-		// Adding the script tag to the head as suggested before
-	    var head = document.getElementsByTagName('head')[0];
-	    var script = document.createElement('script');
-	    script.type = 'text/javascript';
-	    script.src = url;
 
-	    // Then bind the event to the callback function.
-	    // There are several events for cross browser compatibility.
-	    var me = this;
-	    script.onreadystatechange = function(){
-	    	callback.apply(me);
-	    };
-	    script.onload = function(){
-	    	callback.apply(me);
-	    };
-
-	    // Fire the loading
-	    head.appendChild(script);
-	},
 	this.addCSSRule = function(selector, rules, index){
 		var sheet = document.styleSheets[0];
 		if("insertRule" in sheet) {
