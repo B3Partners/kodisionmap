@@ -1,7 +1,7 @@
 function B3pmap(){
 	this.scripts= [
-    "http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js",
-    "http://epsg.io/28992.js"
+    "//cdnjs.cloudflare.com/ajax/libs/proj4js/2.2.1/proj4.js",
+    "//epsg.io/28992.js"
 	];
 	this.map = null,
 	this.vectorLayer = null,
