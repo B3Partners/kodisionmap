@@ -16,9 +16,10 @@ Hoe te gebruiken
         width: 80%;
       }
     </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js", type="text/javascript"></script> <!-- Or another version supporting $.ajax() -->
-    <script src="<PATH_TO>/ol-debug.js" type="text/javascript"></script>
-    <script src="<PATH_TO>/b3pmap.js" type="text/javascript"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js", type="text/javascript"></script> <!-- Or another version supporting $.ajax() -->
+    <script src="ol3/ol-debug.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.3/proj4.js" type="text/javascript"></script>
+    <script src="b3pmap.js" type="text/javascript"></script>
 
     ```
 Neem ook een div element op. Hier wordt de kaart in getoond. Geef het id ervan mee aan de config.
