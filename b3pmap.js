@@ -115,7 +115,7 @@ function B3pmap(){
 			crossOrigin: 'anonymous',
 			extent: extentAr,
 			projection: projection,
-			url: layer//'http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm@rd/{z}/{x}/{-y}.png'
+			url: layer //'http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm@rd/{z}/{x}/{-y}.png'
 		});
 		var tms = new ol.layer.Tile({
 		    source: openbasiskaartSource
@@ -337,7 +337,6 @@ function B3pmap(){
 	/**
 	*restore: {
           wkt:[],
-
       }
 	*/
 	this.restore = function(restoreObject){
@@ -542,7 +541,7 @@ function B3pmap(){
 			layers: layers,
 			view: new ol.View({
 				projection: projection,
-				center: [101984, 437240],
+				center: [112623, 400081],
 				zoom: zoom,
 				minResolution: 0.105,
 				maxResolution: 3440.64,
