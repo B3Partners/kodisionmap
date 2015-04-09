@@ -127,12 +127,19 @@ function B3pmap(){
 		};
 		return output;
 	},
-  	this.baseimg = null,
-  	this.getBase64 = function(){
-  		var me = this;
+	this.baseimg = null,
+	this.getBase64 = function(){
+		var me = this;
 		me.map.once('postcompose', function(event) {
 			var canvas = event.context.canvas;
-			me.baseimg =  canvas.toDataURL();
+			try{
+				me.baseimg = canvas.toDataURL();
+			} catch (e){
+				if(window.console){
+					console.error("De afbeelding kon niet uit het canvas worden gelezen. ",e);
+				}
+				me.baseimg = null;
+			} 
 		});
 		me.map.renderSync();
 		return this.returnImage();
