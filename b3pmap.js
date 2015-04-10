@@ -479,6 +479,18 @@ function B3pmap(){
     * ZoomSlider
     */
     this.initTools = function(tools){
+        if(tools.length > 1) {
+            // sort string ascending so ZoomSlider is always added on top of Zoom
+            tools.sort(function(a, b){
+                if (a.tool_id < b.tool_id){
+                    return -1;
+                }
+                if (a.tool_id > b.tool_id){
+                    return 1;
+                }
+                return 0;
+            });
+        }
         for (var i = 0; i < tools.length; i++) {
             var toolConfig = tools[i];
             var tool = this.initTool(toolConfig);
