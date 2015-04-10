@@ -175,10 +175,6 @@ function B3pmap(){
                     var feature = features[i];
                     area += feature.getGeometry().getArea();
                 };
-            }else if(this.draw.type_ === "Point"){
-                // when point, don't calculate the area :)
-            }else{
-                throw "Other geometry types not yet implemented";
             }
         }else if(this.modus === "select"){
             var features = this.select.getFeatures().getArray();
