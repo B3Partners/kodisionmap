@@ -170,7 +170,7 @@ function B3pmap(){
         if(this.modus === "draw"){
             var source = this.vectorLayer.getSource();
             var features = source.getFeatures();
-            if(this.draw.type_ === "Polygon"){
+            if(this.config.input.draw_modus === "Polygon"){
                 for (var i = 0; i < features.length; i++) {
                     var feature = features[i];
                     area += feature.getGeometry().getArea();
