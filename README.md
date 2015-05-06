@@ -1,7 +1,7 @@
 kodisionmap
 ===========
 
-Map used and controlled by a Kodision created form
+Een kaart component voor gebruik in een Kodision formulier.
 
 
 Hoe te gebruiken
@@ -9,7 +9,7 @@ Hoe te gebruiken
 1. Download en extract de zipfile.
 2. Neem de volgende scripts/csscode/css files op in de html pagina (groote van #map te bepalen):
     ```html
-    <link rel="stylesheet" href="<PATH_TO>/ol3/ol.css" type="text/css">
+    <link rel="stylesheet" href="ol3/ol.css" type="text/css">
     <style>
       #map {
         height: 80%;
@@ -17,16 +17,19 @@ Hoe te gebruiken
       }
     </style>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js", type="text/javascript"></script> <!-- Or another version supporting $.ajax() -->
-    <script src="ol3/ol-debug.js" type="text/javascript"></script>
+    <script src="ol3/ol.js" type="text/javascript"></script>
+    <!-- of de debug versie -->
+    <!-- script src="ol3/ol.js" type="text/javascript"></script -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.3/proj4.js" type="text/javascript"></script>
     <script src="b3pmap.js" type="text/javascript"></script>
 
     ```
-Neem ook een div element op. Hier wordt de kaart in getoond. Geef het id ervan mee aan de config.
+    Neem ook een div element op. Hier wordt de kaart in getoond. Geef het id ervan mee aan de config.
 
 3. Voer het de volgende javascript calls uit:
+
     ```javascript
-	var config = { 
+    var config = { 
           "input": { 
               "map_id" : "map",
               "wms_layers": [ 
@@ -54,7 +57,7 @@ Neem ook een div element op. Hier wordt de kaart in getoond. Geef het id ervan m
               "modus": "draw",// Mogelijke waarden: select, draw : selecteren van object in kaart (via een wfs-laag) of tekenen van geometrie", 
               "draw_modus":  "LineString", // Mogelijke waarden: Polygon, LineString, Point
               "initial_zoom": 6, // "zoomfactor van de kaart bij opstart", 
-              "geolocator_url": "http://bag42.nl/api/v0/geocode/json?address=<ADDRESS>", 
+              "geolocator_url": "http://demo.bag42.plannerstack.com/api/v0/geocode/json?address=<ADDRESS>", 
               "tools": [ 
                 {
                   "tool_id" : "<ID"
@@ -67,7 +70,7 @@ Neem ook een div element op. Hier wordt de kaart in getoond. Geef het id ervan m
                     "<WKT_REPRESENTATIE>"
                     // Voorbeeld: "POLYGON((80268.41871976599 454666.20539748564,80241.53871976599 455123.1653974856,80382.65871976598 455183.64539748564,80530.498719766 454894.6853974856,80268.41871976599 454666.20539748564))"
                   ],
-
+                  // te tekenen objecten in de kaart
               }
             }
           }; 
@@ -76,7 +79,8 @@ Neem ook een div element op. Hier wordt de kaart in getoond. Geef het id ervan m
       bm.init(config); 		 // Initialiseer en start de kaart
 
 
-      bm.getOutput();		 // Aan het einde, roep dit aan voor de output gegenereerd door de gebruiker. Output ziet er ongeveer zo uit:
+      bm.getOutput();		 // Aan het einde, roep dit aan voor de output gegenereerd door de gebruiker. 
+                     		 // Output ziet er ongeveer zo uit:
       /* "output": { 
               
               "surface": "berekend oppervlak (0 indien punt)", 
@@ -92,4 +96,4 @@ Neem ook een div element op. Hier wordt de kaart in getoond. Geef het id ervan m
       	};
       */
     ```
-4. An example can be found in index.html
+4. Voor een voorbeeld zie: in index.html (of https://b3partners.github.io/kodisionmap/)
