@@ -33,7 +33,6 @@ function incrementVersionInFiles {
 	
 }
 
-
 if [ -z "$1" ]; then
 	echo "Versie niet gegeven, stopt."
 	exit 1;
@@ -44,35 +43,27 @@ VERSION=$1;
 echo "**********************************************************************"
 echo ""
 echo "Release maken: "$VERSION
-
-
+echo ""
 echo "Eerdere release pogingen verwijderen..."
 git checkout master
-git branch -d release/v$VERSION
-git branch -d v$VERSION
-git push origin --delete release/v$VERSION
 git push origin --delete v$VERSION
 git reset HEAD --hard
 
+echo ""
 echo "Start release:"
 git checkout master
 git pull --rebase
 
-echo "Maak release branch:"
-git checkout -b release/v$VERSION
-#git push origin release/v$VERSION
-
 changeVersionInFiles
 
 git commit -am "Versie nummer bijgewerkt naar "$VERSION
-#git push --set-upstream origin release/v$VERSION
 
+echo ""
 echo "Maak release tag:"
 git tag -f -a v$VERSION -m "Release versie $VERSION"
-# git checkout v$VERSION
 git push --tags
 
-echo "Update de master met nieuwste versienummers:"
+echo "Versienummer ophogen voor nieuwe snapshot:"
 git checkout master
 
 incrementVersionInFiles
@@ -80,7 +71,5 @@ incrementVersionInFiles
 git commit -am "Versienummer bijgewerkt"
 git push
 
-echo "Maak huidige branch de master:"
-git checkout master
-
+echo ""
 echo "einde"
