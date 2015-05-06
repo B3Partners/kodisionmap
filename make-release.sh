@@ -24,7 +24,7 @@ function incrementVersionInFiles {
 	NEXTVERSION=$MAJOR.$((MINOR+1))-SNAPSHOT
 
 
-	echo "Increment versienummers in bestanden van versie" $VERSION " naar versie" $NEXTVERSION
+	echo "Verhogen versienummers in bestanden van versie" $VERSION " naar versie" $NEXTVERSION
 	
 	for i in ${FILES[@]}; do
 		echo "bestand: "${i}
@@ -64,13 +64,13 @@ git checkout -b release/v$VERSION
 
 changeVersionInFiles
 
-git commit -am "Version number updated"
+git commit -am "Versie nummer bijgewerkt naar "$VERSION
 #git push --set-upstream origin release/v$VERSION
 
 echo "Maak release tag:"
 git tag -f -a v$VERSION -m "Release versie $VERSION"
-git checkout v$VERSION
-git push --set-upstream origin v$VERSION
+# git checkout v$VERSION
+git push --tags
 
 echo "Update de master met nieuwste versienummers:"
 git checkout master
