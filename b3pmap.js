@@ -1,4 +1,4 @@
-// Versie: 1.1-SNAPSHOT
+// Versie: 1.0
 function B3pmap(){
     this.map = null,
     this.vectorLayer = null,
@@ -260,38 +260,40 @@ function B3pmap(){
     */
     this.initModus  = function (config){
         this.modus = config.input.modus;
+
+        var source = new ol.source.Vector();
+
+        this.vectorLayer = new ol.layer.Vector({
+            source: source,
+            style: new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: 'rgba(255, 255, 255, 0.2)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#ffcc33',
+                    width: 2
+                }),
+                image: new ol.style.Circle({
+                    radius: 7,
+                    fill: new ol.style.Fill({
+                        color: '#ffcc33'
+                    })
+                })
+            })
+        });
+        this.map.addLayer(this.vectorLayer);
+
         if(this.modus === "select"){
             var me = this;
             this.select = new ol.interaction.Select({toggle:true, toggleCondition:  ol.events.condition.noModifierKeys});
             this.map.addInteraction(this.select);
         }else if(this.modus === "draw"){
-            var source = new ol.source.Vector();
-
-            this.vectorLayer = new ol.layer.Vector({
-                source: source,
-                style: new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: 'rgba(255, 255, 255, 0.2)'
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: '#ffcc33',
-                        width: 2
-                    }),
-                    image: new ol.style.Circle({
-                        radius: 7,
-                        fill: new ol.style.Fill({
-                            color: '#ffcc33'
-                        })
-                    })
-                })
-            });
+            
             this.draw = new ol.interaction.Draw({
                 source: source,
                 type: config.input.draw_modus
             });
 
-
-            this.map.addLayer(this.vectorLayer);
             this.map.addInteraction(this.draw);
         }else{
             throw "Wrong modus given. Only select and draw supported";
@@ -405,7 +407,7 @@ function B3pmap(){
 
     this.initWFSLayer = function(layerConfig){
         var me = this;
-        this.wfsSource = new ol.source.ServerVector({
+        this.wfsSource = new ol.source.Vector({
           format: new ol.format.GeoJSON(),
           loader: function(extent, resolution, projection) {
                 var url = layerConfig.url + '?service=WFS&' +
@@ -415,8 +417,11 @@ function B3pmap(){
                     url: url,
                     crossDomain:true,
                     dataType: 'text',
-                    success: function(data, status){
-                        me.wfsSource.addFeatures(me.wfsSource.readFeatures(data));
+                    success: function (data, status)
+                    {
+                        //me.wfsSource.addFeatures(me.wfsSource.readFeatures(data));
+                        var format = new ol.format.GeoJSON();
+                        me.wfsSource.addFeatures(format.readFeatures(data));
                     },
                     error: function(xhr, status, error){
                         throw "Error collecting features: " + status + " Error given:" + error;
@@ -424,7 +429,8 @@ function B3pmap(){
                 });
 
           },
-          strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
+            //strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
+          strategy: ol.loadingstrategy.tile(new ol.tilegrid.XYZ({
             maxZoom: 19
           })),
           projection: 'EPSG:28992'
@@ -544,7 +550,8 @@ function B3pmap(){
             selector = ".ol-touch .ol-zoom .ol-zoom-out";
             this.addCSSRule(selector, css);
 
-            css = " top: 2.75em;";
+            //css = " top: 2.75em;";
+            css = " top: 3.2em;left:0.6em;";
             selector = ".ol-touch .ol-zoomslider";
             this.addCSSRule(selector, css);
         }
