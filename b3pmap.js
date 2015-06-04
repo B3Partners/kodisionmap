@@ -1,4 +1,4 @@
-// Versie: 1.0
+// Versie: 1.0-SNAPSHOT
 function B3pmap(){
     this.map = null,
     this.vectorLayer = null,
@@ -288,7 +288,7 @@ function B3pmap(){
             this.select = new ol.interaction.Select({toggle:true, toggleCondition:  ol.events.condition.noModifierKeys});
             this.map.addInteraction(this.select);
         }else if(this.modus === "draw"){
-            
+
             this.draw = new ol.interaction.Draw({
                 source: source,
                 type: config.input.draw_modus
