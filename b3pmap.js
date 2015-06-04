@@ -605,11 +605,11 @@ function B3pmap(){
 
     this.addResetButton = function(){
         var selector = ".reset-button";
-        var css = "position: absolute;top: 265px;left: 8px;background: rgba(255,255,255,0.4);border-radius: 4px;padding: 5px;";
+        var css = "position: absolute;top: 280px;left: 6px;background: rgba(255,255,255,0.4);border-radius: 4px;padding: 5px;";
         this.addCSSRule(selector,css);
 
         selector = ".ol-touch .reset-button ";
-        css = "top: 265px;";
+        css = "top: 280px;";
         this.addCSSRule(selector,css);
 
         selector = ".reset-button a";
