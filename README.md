@@ -6,7 +6,7 @@ Een kaart component voor gebruik in een Kodision formulier.
 
 Hoe te gebruiken
 ----------
-1. Download en extract de zipfile.
+1. Download en extract de zipfile vanuit de [releases](https://github.com/B3Partners/kodisionmap/releases).
 2. Neem de volgende scripts/csscode/css files op in de html pagina (groote van #map te bepalen):
     ```html
     <link rel="stylesheet" href="ol3/ol.css" type="text/css">
@@ -16,11 +16,11 @@ Hoe te gebruiken
         width: 80%;
       }
     </style>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js", type="text/javascript"></script> <!-- Or another version supporting $.ajax() -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js", type="text/javascript"></script> <!-- Or another version supporting $.ajax() -->
     <script src="ol3/ol.js" type="text/javascript"></script>
     <!-- of de debug versie -->
     <!-- script src="ol3/ol.js" type="text/javascript"></script -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.3/proj4.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js" type="text/javascript"></script>
     <script src="b3pmap.js" type="text/javascript"></script>
 
     ```
@@ -96,4 +96,4 @@ Hoe te gebruiken
       	};
       */
     ```
-4. Voor een voorbeeld zie: in index.html (of https://b3partners.github.io/kodisionmap/)
+4. Voor voorbeelden zie de html pagina's of de [voorbeeld site](https://b3partners.github.io/kodisionmap/).
