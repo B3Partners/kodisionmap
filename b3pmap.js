@@ -104,7 +104,7 @@ function B3pmap(){
             crossOrigin: 'anonymous',
             extent: extentAr,
             projection: projection,
-            url: layer //'http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm@rd/{z}/{x}/{-y}.png'
+            url: layer // 'http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm@rd/{z}/{x}/{-y}.png'
         });
         var tms = new ol.layer.Tile({
             source: openbasiskaartSource
@@ -419,7 +419,6 @@ function B3pmap(){
                     dataType: 'text',
                     success: function (data, status)
                     {
-                        //me.wfsSource.addFeatures(me.wfsSource.readFeatures(data));
                         var format = new ol.format.GeoJSON();
                         me.wfsSource.addFeatures(format.readFeatures(data));
                     },
@@ -429,7 +428,6 @@ function B3pmap(){
                 });
 
           },
-            //strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
           strategy: ol.loadingstrategy.tile(new ol.tilegrid.XYZ({
             maxZoom: 19
           })),
@@ -592,9 +590,9 @@ function B3pmap(){
 
         var this_ = this;
         var handleRotateNorth = function(e) {
-        // prevent #reset-button anchor from getting appended to the url
-        e.preventDefault();
-        this_.me.vectorLayer.getSource().clear();
+            // prevent #reset-button anchor from getting appended to the url
+            e.preventDefault();
+            this_.me.vectorLayer.getSource().clear();
         };
 
         anchor.addEventListener('click', handleRotateNorth, false);
