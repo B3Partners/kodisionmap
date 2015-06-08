@@ -7,9 +7,9 @@ function B3pmap(){
     this.modus = null,
     this.wfsSource = null,
     this.config = null,
-    /**
-     * Initialise the map according to the given configuration.
-     * Based on:
+    /*
+      Initialise the map according to the given configuration.
+      Based on:
            "input": {
               "map_id" : "mad",
               "wms_layers": [
@@ -83,7 +83,7 @@ function B3pmap(){
         this.initTools(this.config.input.tools);
         this.initCSS(this.config.input.tools);
 
-        if(this.config.input.restore && this.config.input.restore.wkt.length > 0 ){
+        if(this.config.input.restore && this.config.input.restore.wkt) {
             this.restore(this.config.input.restore);
         }else{
             this.openGeolocatorURL(this.config.input);
@@ -338,30 +338,37 @@ function B3pmap(){
         }
     },
 
-    /**
-    *restore: {
-          wkt:[],
-      }
+   /**
+    * Zet de getekende objecten terug in de kaart.
+    * gebruikt alleen de WKT. 
+    * De selectie van vector elementen gebeurd in initWFSLayer
+    * 
+    * restore: {
+    *     wkt:[],
+    *     object-ids:[]
+    * }
+    * 
+    * @see initWFSLayer
+    * 
     */
-    this.restore = function(restoreObject){
-        var wkts = restoreObject.wkt;
+    this.restore = function(restoreObject) {
+        if(restoreObject.wkt != undefined) {
+            var wkts = restoreObject.wkt;
+            var wktParser = new ol.format.WKT();
+            var geometries = [];
+            var features = [];
+            for (var i = 0; i < wkts.length; i++) {
+                var wkt = wkts[i];
+                var feature = wktParser.readFeature(wkt);
+                features.push(feature);
+                geometries.push(feature.getGeometry());
+            }
 
-        var wktParser = new ol.format.WKT();
-        var geometries = [];
-        var features = [];
-        for (var i = 0; i < wkts.length; i++) {
-            var wkt = wkts[i];
-            var feature = wktParser.readFeature(wkt);
-            features.push(feature);
-            geometries.push(feature.getGeometry());
+            var geomcollection = new ol.geom.GeometryCollection();
+            geomcollection.setGeometries(geometries);
+            this.map.getView().fitExtent(geomcollection.getExtent(), this.map.getSize());
+            this.vectorLayer.getSource().addFeatures(features);
         }
-
-        var geomcollection = new ol.geom.GeometryCollection();
-        geomcollection.setGeometries(geometries);
-        this.map.getView().fitExtent(geomcollection.getExtent(), this.map.getSize());
-
-        this.vectorLayer.getSource().addFeatures(features);
-
     },
 
     this.initWMTSLayers = function(layersConfig, layers, extentAr, projection, resolutions, matrixIds){
@@ -405,6 +412,11 @@ function B3pmap(){
         };
     },
 
+    /**
+     * laadt data in de WFS laag. Als er een restore object met object-ids 
+     * in de configuratie zit worden die opnieuw geselecteerd.
+     * 
+     */
     this.initWFSLayer = function(layerConfig){
         var me = this;
         this.wfsSource = new ol.source.Vector({
@@ -417,18 +429,26 @@ function B3pmap(){
                     url: url,
                     crossDomain:true,
                     dataType: 'text',
-                    success: function (data, status)
-                    {
+                    success: function (data, status) {
                         var format = new ol.format.GeoJSON();
                         me.wfsSource.addFeatures(format.readFeatures(data));
+                        // selectie herstellen
+                        if(me.config.input.restore['object-ids'] != undefined){
+                            var objIds = me.config.input.restore['object-ids'];
+                            me.select.getFeatures().clear();
+                            for(var j = 0; j < objIds.length;j++) {
+                                var featureToSelect = me.wfsSource.getFeatureById(objIds[j]['object-id']);
+                                if (featureToSelect!=null) {
+                                    me.select.getFeatures().push(featureToSelect);
+                                }
+                            }
+                        }
                     },
-                    error: function(xhr, status, error){
+                    error: function(xhr, status, error) {
                         throw "Error collecting features: " + status + " Error given:" + error;
                     }
                 });
-
           },
-          //strategy: ol.loadingstrategy.tile(new ol.tilegrid.XYZ({
           strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
             maxZoom: 19
           })),
