@@ -1,4 +1,4 @@
-// Versie: 1.2-SNAPSHOT
+// Versie: 1.2
 function B3pmap(){
     this.map = null,
     this.vectorLayer = null,
