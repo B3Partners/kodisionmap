@@ -7,6 +7,7 @@ function B3pmap(){
     this.modus = null,
     this.wfsSource = null,
     this.config = null,
+    this.wmtsParser = null,
     /*
       Initialise the map according to the given configuration.
       Based on:
@@ -62,6 +63,7 @@ function B3pmap(){
     this.initComponent = function (){
         proj4.defs("EPSG:28992","+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs");
         proj4.defs('http://www.opengis.net/gml/srs/epsg.xml#28992', proj4.defs('EPSG:28992'));
+        this.wmtsParser =  new ol.format.WMTSCapabilities();
 
         var extentAr = [-285401.0,22598.0,595401.0,903401.0];
         var resolutions = [3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84, 0.42,0.21,0.105];
@@ -74,11 +76,13 @@ function B3pmap(){
 
         var layers = [];
         this.initTMSLayers(this.config.input.tms_layers, layers, extentAr, projection);
-        this.initWMTSLayers(this.config.input.wmts_layers,layers, extentAr, projection, resolutions, matrixIds);
         this.initWMSLayers(this.config.input.wms_layers,layers);
         this.initWFSLayers(this.config.input.wfs_layers,layers);
 
-        this.createMap(layers,this.config.input.initial_zoom || 2, extentAr,projection, this.config.input.map_id)
+        this.createMap(layers,this.config.input.initial_zoom || 2, extentAr,projection, this.config.input.map_id);
+
+        this.initWMTSLayers(this.config.input.wmts_layers,layers, extentAr, projection, resolutions, matrixIds);
+
         this.initModus(this.config);
         this.initTools(this.config.input.tools);
         this.initCSS(this.config.input.tools);
@@ -366,7 +370,7 @@ function B3pmap(){
 
             var geomcollection = new ol.geom.GeometryCollection();
             geomcollection.setGeometries(geometries);
-            this.map.getView().fitExtent(geomcollection.getExtent(), this.map.getSize());
+            this.map.getView().fit(geomcollection.getExtent(), this.map.getSize());
             this.vectorLayer.getSource().addFeatures(features);
         }
     },
@@ -380,22 +384,20 @@ function B3pmap(){
     },
 
     this.initWMTSLayer = function (layerConfig, extentAr, projection, resolutions, matrixIds){
-        var layer = new ol.layer.Tile({
-            extent: extentAr,
-            source: new ol.source.WMTS({
-                url: layerConfig.url,
-                layer: layerConfig.layer,
-                matrixSet: 'EPSG:28992',
-                format: layerConfig.format || 'image/png',
-                projection: projection,
-                tileGrid: new ol.tilegrid.WMTS({
-                    origin: ol.extent.getTopLeft(extentAr),
-                    resolutions: resolutions,
-                    matrixIds: matrixIds
-                })
-            })
-        })
-        return layer;
+        var me = this;
+        me.projection = projection;
+        $.ajax(layerConfig.url).then(function(response) {
+            var result = me.wmtsParser.read(response);
+            var options = ol.source.WMTS.optionsFromCapabilities(result,
+              {layer: layerConfig.layer, matrixSet: "default028mm"});
+
+
+            var layer = new ol.layer.Tile({
+                opacity: 1,
+                source: new ol.source.WMTS(options)
+            });
+            me.addLayer(layer);
+        });
     },
 
     /**
