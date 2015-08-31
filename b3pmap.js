@@ -389,14 +389,14 @@ function B3pmap(){
         $.ajax(layerConfig.url).then(function(response) {
             var result = me.wmtsParser.read(response);
             var options = ol.source.WMTS.optionsFromCapabilities(result,
-              {layer: layerConfig.layer, matrixSet: "default028mm"});
+              {layer: layerConfig.layer, matrixSet: layerConfig.matrixSet, crossOrigin: 'anonymous'});
 
 
             var layer = new ol.layer.Tile({
                 opacity: 1,
                 source: new ol.source.WMTS(options)
             });
-            me.addLayer(layer);
+            me.map.getLayers().insertAt(0, layer);
         });
     },
 

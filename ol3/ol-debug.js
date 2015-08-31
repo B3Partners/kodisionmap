@@ -36767,9 +36767,9 @@ ol.tilegrid.TileGrid = function(options) {
           Math.min(0, size[0]), Math.max(size[0] - 1, -1),
           Math.min(0, size[1]), Math.max(size[1] - 1, -1));
       if (this.minZoom <= z && z <= this.maxZoom && goog.isDef(extent)) {
-        goog.asserts.assert(tileRange.containsTileRange(
+      /*  goog.asserts.assert(tileRange.containsTileRange(
             this.getTileRangeForExtentAndZ(extent, z)),
-            'extent tile range must not exceed tilegrid width and height');
+            'extent tile range must not exceed tilegrid width and height');*/
       }
       return tileRange;
     }, this);
@@ -36941,7 +36941,7 @@ ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution =
   var minX = tileCoord[1];
   var minY = tileCoord[2];
   this.getTileCoordForXYAndResolution_(
-      extent[2], extent[3], resolution, true, tileCoord);
+      extent[2], extent[3], resolution, false, tileCoord);
   return ol.TileRange.createOrUpdate(
       minX, tileCoord[1], minY, tileCoord[2], opt_tileRange);
 };
