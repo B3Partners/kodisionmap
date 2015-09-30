@@ -65,11 +65,6 @@ function B3pmap(){
         proj4.defs('http://www.opengis.net/gml/srs/epsg.xml#28992', proj4.defs('EPSG:28992'));
         var proxyURL = this.config.input.proxy_url;
 
-        if(proxyURL && proxyURL.length > 0){
-            proxyURL += proxyURL + proxyURL.indexOf("?") === -1 ? "?" : "&";
-            proxyURL += "=";
-        }
-
         this.wmtsParser =  new ol.format.WMTSCapabilities();
 
         var extentAr = [-285401.0,22598.0,595401.0,903401.0];
