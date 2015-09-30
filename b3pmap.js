@@ -63,6 +63,13 @@ function B3pmap(){
     this.initComponent = function (){
         proj4.defs("EPSG:28992","+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs");
         proj4.defs('http://www.opengis.net/gml/srs/epsg.xml#28992', proj4.defs('EPSG:28992'));
+        var proxyURL = this.config.input.proxy_url;
+
+        if(proxyURL && proxyURL.length > 0){
+            proxyURL += proxyURL + proxyURL.indexOf("?") === -1 ? "?" : "&";
+            proxyURL += "=";
+        }
+
         this.wmtsParser =  new ol.format.WMTSCapabilities();
 
         var extentAr = [-285401.0,22598.0,595401.0,903401.0];
@@ -80,8 +87,7 @@ function B3pmap(){
         this.initWFSLayers(this.config.input.wfs_layers,layers);
 
         this.createMap(layers,this.config.input.initial_zoom || 2, extentAr,projection, this.config.input.map_id);
-
-        this.initWMTSLayers(this.config.input.wmts_layers,layers, extentAr, projection, resolutions, matrixIds);
+        this.initWMTSLayers(this.config.input.wmts_layers,layers, extentAr, projection, resolutions, matrixIds,proxyURL);
 
         this.initModus(this.config);
         this.initTools(this.config.input.tools);
@@ -375,26 +381,32 @@ function B3pmap(){
         }
     },
 
-    this.initWMTSLayers = function(layersConfig, layers, extentAr, projection, resolutions, matrixIds){
+    this.initWMTSLayers = function(layersConfig, layers, extentAr, projection, resolutions, matrixIds,proxyURL){
         for (var i = 0 ; i < layersConfig.length ;i++){
             var config = layersConfig[0];
-            var layer = this.initWMTSLayer(config, extentAr, projection, resolutions, matrixIds);
+            var layer = this.initWMTSLayer(config, extentAr, projection, resolutions, matrixIds,proxyURL);
             layers.push(layer);
         }
     },
 
-    this.initWMTSLayer = function (layerConfig, extentAr, projection, resolutions, matrixIds){
+    this.initWMTSLayer = function (layerConfig, extentAr, projection, resolutions, matrixIds,proxyURL){
         var me = this;
         me.projection = projection;
         $.ajax(layerConfig.url).then(function(response) {
             var result = me.wmtsParser.read(response);
             var options = ol.source.WMTS.optionsFromCapabilities(result,
-              {layer: layerConfig.layer, matrixSet: layerConfig.matrixSet, crossOrigin: 'anonymous'});
+              {layer: layerConfig.layer, matrixSet: layerConfig.matrixSet, crossOrigin: null});
 
-
+            var source =  new ol.source.WMTS(options);
+        
+            if(proxyURL && proxyURL.length > 0){
+                source.tileLoadFunction = function (imageTile, src){
+                  imageTile.getImage().src = proxyURL + encodeURIComponent(src);
+                };
+            }
             var layer = new ol.layer.Tile({
                 opacity: 1,
-                source: new ol.source.WMTS(options)
+                source:source
             });
             me.map.getLayers().insertAt(0, layer);
         });
